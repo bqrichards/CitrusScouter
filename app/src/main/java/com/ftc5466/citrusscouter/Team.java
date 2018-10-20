@@ -69,6 +69,74 @@ public class Team {
         this.detectGoldMineral = detectGoldMineral;
     }
 
+    public boolean isBeginsLatched() {
+        return beginsLatched;
+    }
+
+    public void setBeginsLatched(boolean beginsLatched) {
+        this.beginsLatched = beginsLatched;
+    }
+
+    public boolean isClaimsDepot() {
+        return claimsDepot;
+    }
+
+    public void setClaimsDepot(boolean claimsDepot) {
+        this.claimsDepot = claimsDepot;
+    }
+
+    public boolean isDetectGoldMineral() {
+        return detectGoldMineral;
+    }
+
+    public boolean isParkInCraterAutonomous() {
+        return parkInCraterAutonomous;
+    }
+
+    public void setParkInCraterAutonomous(boolean parkInCraterAutonomous) {
+        this.parkInCraterAutonomous = parkInCraterAutonomous;
+    }
+
+    public int getMineralsInDepot() {
+        return mineralsInDepot;
+    }
+
+    public void setMineralsInDepot(int mineralsInDepot) {
+        this.mineralsInDepot = mineralsInDepot;
+    }
+
+    public int getMineralsInLander() {
+        return mineralsInLander;
+    }
+
+    public void setMineralsInLander(int mineralsInLander) {
+        this.mineralsInLander = mineralsInLander;
+    }
+
+    public boolean isEndsLatched() {
+        return endsLatched;
+    }
+
+    public void setEndsLatched(boolean endsLatched) {
+        this.endsLatched = endsLatched;
+    }
+
+    public boolean isPartialParkInCrater() {
+        return partialParkInCrater;
+    }
+
+    public void setPartialParkInCrater(boolean partialParkInCrater) {
+        this.partialParkInCrater = partialParkInCrater;
+    }
+
+    public boolean isFullParkInCrater() {
+        return fullParkInCrater;
+    }
+
+    public void setFullParkInCrater(boolean fullParkInCrater) {
+        this.fullParkInCrater = fullParkInCrater;
+    }
+
     @NonNull
     @Override
     public String toString() {
