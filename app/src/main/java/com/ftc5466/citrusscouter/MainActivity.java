@@ -1,6 +1,7 @@
 package com.ftc5466.citrusscouter;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment[] fragments = {new ViewTeamsFragment()};
     private String[] fragmentNames = {"View Teams"};
+
+    private final int CHANGE_TEAM_INFO_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +61,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getBaseContext(), AddTeamActivity.class);
-                startActivity(i);
+                startActivityForResult(i, CHANGE_TEAM_INFO_REQUEST);
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CHANGE_TEAM_INFO_REQUEST) {
+            // Tell view fragment to refresh
+            ((ViewTeamsFragment) fragments[0]).refresh();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -20,23 +20,39 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ViewTeamsFragment extends Fragment {
+    private ViewTeamDataAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_teams, container, false);
 
-        ViewTeamDataAdapter adapter = new ViewTeamDataAdapter();
+        adapter = new ViewTeamDataAdapter();
         ExpandableListView listView = rootView.findViewById(R.id.view_teams_expandable_list_view);
         listView.setAdapter(adapter);
 
         return rootView;
     }
 
+    /**
+     * Refresh the View Team List
+     */
+    public void refresh() {
+        adapter.refresh();
+    }
+
     private class ViewTeamDataAdapter extends BaseExpandableListAdapter {
-        private ArrayList<Team> groups = new ArrayList<>();
+        private CitrusDb db;
+        private ArrayList<Team> groups;
 
         public ViewTeamDataAdapter() {
-            groups.add(Team.testTeam());
+            db = new CitrusDb(getContext());
+            groups = db.getTeams();
+        }
+
+        public void refresh() {
+            groups = db.getTeams();
+            notifyDataSetChanged();
         }
 
         @Override

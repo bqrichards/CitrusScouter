@@ -1,5 +1,6 @@
 package com.ftc5466.citrusscouter;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 public class Team {
@@ -36,13 +37,27 @@ public class Team {
         endsLatched = false;
         partialParkInCrater = false;
         fullParkInCrater = false;
-
     }
 
-    public static Team testTeam() {
-        Team t = new Team("Test Team", 0);
-        t.setDetectGoldMineral(true);
-        return t;
+    /**
+     * Create a Team object from a database {@link Cursor}
+     * @param cursor the cursor from the database
+     */
+    public Team(Cursor cursor) {
+        teamName = cursor.getString(cursor.getColumnIndex(TeamsContract.COLUMN_TEAM_NAME));
+        teamNumber = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_TEAM_NUMBER));
+
+        beginsLatched = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_BEGINS_LATCHED)) == 1;
+        claimsDepot = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_CLAIMS_DEPOT)) == 1;
+        detectGoldMineral = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_DETECTS_GOLD_MINERAL)) == 1;
+        parkInCraterAutonomous = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_PARKS_IN_CRATER_AUTONOMOUS)) == 1;
+
+        mineralsInDepot = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_MINERALS_IN_DEPOT));
+        mineralsInLander = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_MINERALS_IN_LANDER));
+
+        endsLatched = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_ENDS_LATCHED)) == 1;
+        partialParkInCrater = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_PARTIAL_PARK)) == 1;
+        fullParkInCrater = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_FULL_PARK)) == 1;
     }
 
     public String getTeamName() {
@@ -69,7 +84,7 @@ public class Team {
         this.detectGoldMineral = detectGoldMineral;
     }
 
-    public boolean isBeginsLatched() {
+    public boolean beginsLatched() {
         return beginsLatched;
     }
 
@@ -83,10 +98,6 @@ public class Team {
 
     public void setClaimsDepot(boolean claimsDepot) {
         this.claimsDepot = claimsDepot;
-    }
-
-    public boolean isDetectGoldMineral() {
-        return detectGoldMineral;
     }
 
     public boolean isParkInCraterAutonomous() {
