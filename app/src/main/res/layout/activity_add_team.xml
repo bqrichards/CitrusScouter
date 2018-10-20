@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Team Name"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textColorHighlight="@color/colorPrimary"/>
 
     <EditText
         android:id="@+id/team_number_editText"
