@@ -4,4 +4,27 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="action_settings">Settings</string>
+    <string name="match">Match</string>
+    <string name="red_1">Red 1</string>
+    <string name="red_2">Red 2</string>
+    <string name="blue_1">Blue 1</string>
+    <string name="blue_2">Blue 2</string>
+    <string name="team_number">Team Number</string>
+    <string name="team_name">Team Name</string>
+    <string name="team_information">Team Information</string>
+    <string name="autonomous">Autonomous</string>
+    <string name="begins_latched">Begins Latched</string>
+    <string name="claim_depot">Claim Depot</string>
+    <string name="detect_gold">Detect Gold</string>
+    <string name="park_in_crater">Park in Crater</string>
+    <string name="teleop">TeleOp</string>
+    <string name="minerals_in_depot">Minerals in Depot</string>
+    <string name="minerals_in_lander">Minerals in Lander</string>
+    <string name="end_game">End Game</string>
+    <string name="ends_latched">Ends Latched</string>
+    <string name="crater_parking">Crater Parking</string>
+    <string name="no">No</string>
+    <string name="partial">Partial</string>
+    <string name="full">Full</string>
+    <string name="save">Save</string>
 </resources>

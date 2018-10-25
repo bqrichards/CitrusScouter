@@ -5,15 +5,28 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class CitrusDb extends SQLiteOpenHelper  {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Citrus.db";
 
+    // Matchlist
+    private String matchlistFilename;
+
     public CitrusDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        matchlistFilename = PreferenceManager.getDefaultSharedPreferences(context).getString("MATCHLIST_FILENAME", null);
     }
 
     public long insertTeam(Team team) {
@@ -69,5 +82,54 @@ public class CitrusDb extends SQLiteOpenHelper  {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    // https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android
+    private void writeToFile(Context context, String filename, String data) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+                    context.openFileOutput(filename, Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("CitrusException", "File write failed: " + e.toString());
+        }
+    }
+
+    // https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android
+    private String readFromFile(Context context, String filename) {
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput(filename);
+            if (inputStream == null) {
+                throw new IOException("Input stream is null");
+            }
+
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String receiveString = "";
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ( (receiveString = bufferedReader.readLine()) != null ) {
+                stringBuilder.append(receiveString);
+            }
+
+            inputStream.close();
+            ret = stringBuilder.toString();
+        } catch (FileNotFoundException e) {
+            Log.e("CitrusException", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("CitrusException", "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
+
+    private File[] matchlists(Context context) {
+        File path = context.getFilesDir();
+        // TODO - check for .matchlist file extention
+        return path.listFiles();
     }
 }
