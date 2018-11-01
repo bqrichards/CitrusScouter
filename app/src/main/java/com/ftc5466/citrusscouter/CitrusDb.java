@@ -8,6 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,16 +24,47 @@ import java.util.ArrayList;
 public class CitrusDb extends SQLiteOpenHelper  {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Citrus.db";
+    private static CitrusDb db;
 
     // Matchlist
     private String matchlistFilename;
+    public JSONArray matchlist;
 
-    public CitrusDb(Context context) {
+    private CitrusDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         matchlistFilename = PreferenceManager.getDefaultSharedPreferences(context).getString("MATCHLIST_FILENAME", null);
+
+        if (matchlistFilename != null) {
+            // Try to load matchlist
+            String contents = readFromFile(context, matchlistFilename);
+        }
     }
 
-    public long insertTeam(Team team) {
+    public static void init(Context context) {
+        db = new CitrusDb(context);
+    }
+
+    public static CitrusDb getInstance() {
+        return db;
+    }
+
+    public JSONArray newMatchlist(String filename, int matches) {
+        matchlistFilename = filename;
+        matchlist = new JSONArray();
+
+        for (int i = 0; i < matches; i++) {
+            JSONArray array = new JSONArray(); // Create an array of 4 placeholders
+            array.put(0);
+            array.put(0);
+            array.put(0);
+            array.put(0);
+            matchlist.put(array);
+        }
+
+        return matchlist;
+    }
+
+    public void insertTeam(Team team) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -50,7 +85,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         values.put(TeamsContract.COLUMN_PARTIAL_PARK, team.isPartialParkInCrater());
         values.put(TeamsContract.COLUMN_FULL_PARK, team.isFullParkInCrater());
 
-        return db.insert(TeamsContract.TABLE_NAME, null, values);
+        db.insert(TeamsContract.TABLE_NAME, null, values);
     }
 
     public ArrayList<Team> getTeams() {
@@ -66,6 +101,18 @@ public class CitrusDb extends SQLiteOpenHelper  {
         cursor.close();
 
         return results;
+    }
+
+    public void insertTeamIntoMatchlist(int teamNumber, int row, int column) {
+        try {
+            matchlist.getJSONArray(row).put(column, teamNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void save() {
+        // TODO - write matchlist to disk
     }
 
     @Override
@@ -119,9 +166,9 @@ public class CitrusDb extends SQLiteOpenHelper  {
             inputStream.close();
             ret = stringBuilder.toString();
         } catch (FileNotFoundException e) {
-            Log.e("CitrusException", "File not found: " + e.toString());
+            Log.e(MainActivity.LOG_TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.e("CitrusException", "Can not read file: " + e.toString());
+            Log.e(MainActivity.LOG_TAG, "Can not read file: " + e.toString());
         }
 
         return ret;

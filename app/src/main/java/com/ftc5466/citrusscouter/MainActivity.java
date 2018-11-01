@@ -12,18 +12,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String LOG_TAG = "MY_LOGGING_TAG";
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    private Fragment[] fragments = {new ViewTeamsFragment(), new ViewMatchlistFragment()};
-    private String[] fragmentNames = {"Teams", "Matchlist"};
+    private final ViewTeamsFragment teamsFragment = new ViewTeamsFragment();
+    private final String TEAMS_TITLE = "Teams";
+
+    private ViewMatchlistFragment matchlistFragment = new ViewMatchlistFragment();
+    private final String MATCHLIST_TITLE = "Matchlist";
 
     private final int CHANGE_TEAM_INFO_REQUEST = 0;
+    private final int TAB_START_INDEX = 1; // Used for debugging, swiping to new tab every time is annoying
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +46,31 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-
-        for (String fragmentName : fragmentNames) {
-            tabLayout.addTab(tabLayout.newTab().setText(fragmentName));
-        }
+        tabLayout.addTab(tabLayout.newTab().setText(TEAMS_TITLE));
+        tabLayout.addTab(tabLayout.newTab().setText(MATCHLIST_TITLE));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText() == null) {
+                    throw new IllegalArgumentException("Tab doesn't have a title!");
+                }
+
+                if (tab.getText().toString().equals(MATCHLIST_TITLE)) {
+                    // TODO - activate menu
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(i, CHANGE_TEAM_INFO_REQUEST);
             }
         });
+
+        mViewPager.setCurrentItem(TAB_START_INDEX, true);
+
+        CitrusDb.init(this);
     }
 
     @Override
@@ -65,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == CHANGE_TEAM_INFO_REQUEST) {
             // Tell view fragment to refresh
-            ((ViewTeamsFragment) fragments[0]).refresh();
+            teamsFragment.refresh();
         }
     }
 
@@ -98,12 +125,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return fragments[position];
+            switch (position) {
+                case 0:
+                    return teamsFragment;
+                case 1:
+                    return matchlistFragment;
+                default:
+                    throw new IllegalArgumentException("Trying to get tab that doesn't exist");
+            }
         }
 
         @Override
         public int getCount() {
-            return fragments.length;
+            return 2;
         }
     }
 }

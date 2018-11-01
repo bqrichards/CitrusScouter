@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_new_matchlist"
+        android:title="New Matchlist" />
+
+    <item
+        android:id="@+id/action_save_matchlist"
+        android:title="Save Matchlist" />
+
+    <item
+        android:id="@+id/action_load_matchlist"
+        android:title="Load Matchlist" />
+
+    <item
+        android:id="@+id/action_edit_matchlist"
+        android:title="Edit Matchlist" />
+</menu>

@@ -42,16 +42,14 @@ public class ViewTeamsFragment extends Fragment {
     }
 
     private class ViewTeamDataAdapter extends BaseExpandableListAdapter {
-        private CitrusDb db;
         private ArrayList<Team> groups;
 
         public ViewTeamDataAdapter() {
-            db = new CitrusDb(getContext());
-            groups = db.getTeams();
+            groups = CitrusDb.getInstance().getTeams();
         }
 
         public void refresh() {
-            groups = db.getTeams();
+            groups = CitrusDb.getInstance().getTeams();
             notifyDataSetChanged();
         }
 

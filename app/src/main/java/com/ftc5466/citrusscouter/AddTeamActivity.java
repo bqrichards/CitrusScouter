@@ -25,14 +25,10 @@ public class AddTeamActivity extends AppCompatActivity {
     CheckBox endsLatchedCheckBox;
     RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
 
-    // Database
-    CitrusDb db;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_team);
-        db = new CitrusDb(this);
 
         teamNameEditText = findViewById(R.id.team_name_editText);
         teamNumberEditText = findViewById(R.id.team_number_editText);
@@ -95,7 +91,7 @@ public class AddTeamActivity extends AppCompatActivity {
         newTeam.setPartialParkInCrater(craterParkingPartial);
         newTeam.setFullParkInCrater(craterPartialFull);
 
-        db.insertTeam(newTeam);
+        CitrusDb.getInstance().insertTeam(newTeam);
         Toast.makeText(this, "Team saved!", Toast.LENGTH_SHORT).show();
 
         setResult(0);
