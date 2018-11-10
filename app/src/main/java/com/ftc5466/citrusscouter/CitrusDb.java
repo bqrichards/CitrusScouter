@@ -11,13 +11,10 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,7 +47,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         return db;
     }
 
-    public JSONArray newMatchlist(Context context, String filename, int matches) {
+    public void newMatchlist(Context context, String filename, int matches) {
         matchlistFilename = filename + ".matchlist";
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("MATCHLIST_FILENAME", matchlistFilename).apply();
         matchlist = new JSONArray();
@@ -65,8 +62,6 @@ public class CitrusDb extends SQLiteOpenHelper  {
         }
 
         save(context);
-
-        return matchlist;
     }
 
     public void insertTeam(Team team) {

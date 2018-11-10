@@ -151,21 +151,21 @@ public class Team {
     @NonNull
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Autonomous\n");
-        sb.append("Begins Latched: %s\n");
-        sb.append("Claims Depot: %s\n");
-        sb.append("Detects Gold Mineral: %s\n");
-        sb.append("Parks in Crater: %s\n");
-        sb.append("\nTeleOp\n");
-        sb.append("Minerals in Depot: %d\n");
-        sb.append("Minerals in Lander: %d\n");
-        sb.append("\nEnd Game\n");
-        sb.append("Ends Game Latched: %s\n");
-        sb.append("Partial Park In Crater: %s\n");
-        sb.append("Full Park In Crater: %s\n");
+        String sb = "";
+        sb += "Autonomous\n";
+        sb += "Begins Latched: %s\n";
+        sb += "Claims Depot: %s\n";
+        sb += "Detects Gold Mineral: %s\n";
+        sb += "Parks in Crater: %s\n";
+        sb += "\nTeleOp\n";
+        sb += "Minerals in Depot: %d\n";
+        sb += "Minerals in Lander: %d\n";
+        sb += "\nEnd Game\n";
+        sb += "Ends Game Latched: %s\n";
+        sb += "Partial Park In Crater: %s\n";
+        sb += "Full Park In Crater: %s\n";
 
-        String s = String.format(sb.toString(),
+        String s = String.format(sb,
                 beginsLatched, claimsDepot, detectGoldMineral, parkInCraterAutonomous,
                 mineralsInDepot, mineralsInLander, endsLatched, partialParkInCrater, fullParkInCrater);
 

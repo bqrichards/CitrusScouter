@@ -6,22 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 
 public class ViewTeamsFragment extends Fragment {
     private ViewTeamDataAdapter adapter;
@@ -122,6 +115,7 @@ public class ViewTeamsFragment extends Fragment {
         }
     }
 
+    // TODO implement
     public void editChild(final View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -136,6 +130,7 @@ public class ViewTeamsFragment extends Fragment {
                 .show();
     }
 
+    // TODO implement
     public void deleteChild(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("*Delete Team* - This is pretty destructive!")

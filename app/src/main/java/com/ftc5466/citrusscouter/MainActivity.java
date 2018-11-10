@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static final String LOG_TAG = "LE_EPIC_LOGGING_TAG";
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private final ViewTeamsFragment teamsFragment = new ViewTeamsFragment();
     private final String TEAMS_TITLE = "Teams";
 
-    private ViewMatchlistFragment matchlistFragment = new ViewMatchlistFragment();
+    private final ViewMatchlistFragment matchlistFragment = new ViewMatchlistFragment();
     private final String MATCHLIST_TITLE = "Matchlist";
 
     private final int CHANGE_TEAM_INFO_REQUEST = 0;
@@ -91,28 +90,6 @@ public class MainActivity extends AppCompatActivity {
             // Tell view fragment to refresh
             teamsFragment.refresh();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_view_teams, menu);
-        return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public static void log(Object o) {

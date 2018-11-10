@@ -1,6 +1,5 @@
 package com.ftc5466.citrusscouter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,18 +11,18 @@ import android.widget.Toast;
 
 public class AddTeamActivity extends AppCompatActivity {
     // Team Information
-    EditText teamNameEditText, teamNumberEditText;
+    private EditText teamNameEditText, teamNumberEditText;
 
     // Autonomous
-    CheckBox beginsLatchedCheckBox, claimsDepotCheckBox;
-    CheckBox detectsGoldMineralCheckBox, parkInCraterCheckBox;
+    private CheckBox beginsLatchedCheckBox, claimsDepotCheckBox;
+    private CheckBox detectsGoldMineralCheckBox, parkInCraterCheckBox;
 
     // TeleOp
-    EditText mineralsInDepotEditText, mineralsInLanderEditText;
+    private EditText mineralsInDepotEditText, mineralsInLanderEditText;
 
     // End Game
-    CheckBox endsLatchedCheckBox;
-    RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
+    private CheckBox endsLatchedCheckBox;
+    private RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
