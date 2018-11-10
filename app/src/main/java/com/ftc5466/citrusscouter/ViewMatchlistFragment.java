@@ -17,12 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class ViewMatchlistFragment extends Fragment {
     private EditText[][] editTexts;
@@ -55,50 +59,23 @@ public class ViewMatchlistFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         if (id == R.id.action_new_matchlist) {
-
-            builder.setTitle("New Matchlist")
-                    .setMessage("Enter in the name for this matchlist")
-                    .setView(R.layout.dialog_new_matchlist)
-                    .setPositiveButton("Create", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            EditText matchlistFileNameEditText = ((AlertDialog) dialog).findViewById(R.id.matchlist_file_name);
-                            EditText numberOfMatchesEditText = ((AlertDialog) dialog).findViewById(R.id.matchlist_number_of_matches);
-
-                            String filename = matchlistFileNameEditText.getText().toString().trim();
-                            if (filename.isEmpty()) {
-                                Toast.makeText(getContext(), "Couldn't make matchlist. Filename cannot be empty.", Toast.LENGTH_LONG).show();
-                                return;
-                            } else if (filename.contains(" ")) {
-                                Toast.makeText(getContext(), "Couldn't make matchlist. Filename cannot contain space.", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            int numberOfMatches;
-                            try {
-                                numberOfMatches = Integer.parseInt(numberOfMatchesEditText.getText().toString());
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getContext(), "Couldn't make matchlist. Invalid number of matches.", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            CitrusDb.getInstance().newMatchlist(getContext(), filename, numberOfMatches);
-                            try {
-                                fill();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null)
-                    .show();
+            showNewMatchlistAlert();
             return true;
         } else if (id == R.id.action_save_matchlist) {
             save();
             return true;
         } else if (id == R.id.action_load_matchlist) {
             // TODO - show dialog with saves
+            File[] localFiles = CitrusDb.getInstance().matchlists(getContext());
+            ArrayList<String> filenames = new ArrayList<>();
+            for (File f : localFiles) {
+                String filename = f.getName();
+                String ext = filename.substring(filename.lastIndexOf("."));
+                if (ext.equals(".matchlist")) {
+                    filenames.add(filename);
+                }
+            }
+            showLoadMatchlistAlert(filenames.toArray(new CharSequence[]{}));
             return true;
         } else if (id == R.id.action_edit_matchlist) {
             // TODO - show edit screen
@@ -106,6 +83,74 @@ public class ViewMatchlistFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showNewMatchlistAlert() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("New Matchlist")
+                .setMessage("Enter in the name for this matchlist")
+                .setView(R.layout.dialog_new_matchlist)
+                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText matchlistFileNameEditText = ((AlertDialog) dialog).findViewById(R.id.matchlist_file_name);
+                        EditText numberOfMatchesEditText = ((AlertDialog) dialog).findViewById(R.id.matchlist_number_of_matches);
+
+                        String filename = matchlistFileNameEditText.getText().toString().trim();
+                        if (filename.isEmpty()) {
+                            Toast.makeText(getContext(), "Couldn't make matchlist. Filename cannot be empty.", Toast.LENGTH_LONG).show();
+                            return;
+                        } else if (filename.contains(" ")) {
+                            Toast.makeText(getContext(), "Couldn't make matchlist. Filename cannot contain space.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        int numberOfMatches;
+                        try {
+                            numberOfMatches = Integer.parseInt(numberOfMatchesEditText.getText().toString());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Couldn't make matchlist. Invalid number of matches.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        CitrusDb.getInstance().newMatchlist(getContext(), filename, numberOfMatches);
+                        try {
+                            fill();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void showLoadMatchlistAlert(CharSequence[] options) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Load Matchlist")
+                .setSingleChoiceItems(options, -1, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int checkedIndex = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        if (checkedIndex == -1) {
+                            return;
+                        }
+
+                        String checkedFilename = (String)((AlertDialog)dialog).getListView().getItemAtPosition(checkedIndex);
+                        boolean matchlistLoaded = CitrusDb.getInstance().loadMatchlist(getContext(), checkedFilename);
+                        if (matchlistLoaded) {
+                            try {
+                                fill();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
     private void fill() throws JSONException {

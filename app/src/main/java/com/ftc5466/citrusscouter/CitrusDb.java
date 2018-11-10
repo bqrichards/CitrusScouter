@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,19 +37,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         matchlistFilename = PreferenceManager.getDefaultSharedPreferences(context).getString("MATCHLIST_FILENAME", null);
 
         if (matchlistFilename != null) {
-            // Try to load matchlist
-            String contents = readFromFile(context, matchlistFilename);
-            if (contents == null) {
-                Log.d(MainActivity.LOG_TAG, "Matchlist " + matchlistFilename + " not found. :(");
-            } else {
-                Log.d(MainActivity.LOG_TAG, "Found matchlist " + matchlistFilename + "! Loading...");
-                try {
-                    matchlist = new JSONArray(contents);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.d(MainActivity.LOG_TAG, e.getMessage());
-                }
-            }
+            loadMatchlist(context, matchlistFilename);
         }
     }
 
@@ -126,6 +115,27 @@ public class CitrusDb extends SQLiteOpenHelper  {
         }
     }
 
+    public boolean loadMatchlist(Context context, String filename) {
+        // Try to load matchlist
+        String contents = readFromFile(context, filename);
+        if (contents == null) {
+            Log.d(MainActivity.LOG_TAG, "Matchlist " + filename + " not found. :(");
+            return false;
+        } else {
+            Log.d(MainActivity.LOG_TAG, "Found matchlist " + filename + "! Loading...");
+            try {
+                matchlist = new JSONArray(contents);
+                matchlistFilename = filename;
+                Toast.makeText(context, "Loaded previous matchlist " + filename, Toast.LENGTH_LONG).show();
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d(MainActivity.LOG_TAG, e.getMessage());
+                return false;
+            }
+        }
+    }
+
     public void save(Context context) {
         Log.d(MainActivity.LOG_TAG, "Saving matchlist " + matchlistFilename);
         writeToFile(context, matchlistFilename, matchlist.toString());
@@ -188,7 +198,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         return ret;
     }
 
-    private File[] matchlists(Context context) {
+    public File[] matchlists(Context context) {
         File path = context.getFilesDir();
         // TODO - check for .matchlist file extention
         return path.listFiles();

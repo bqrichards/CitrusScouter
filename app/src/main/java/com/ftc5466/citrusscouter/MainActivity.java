@@ -115,6 +115,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public static void log(Object o) {
+        Log.e(LOG_TAG, o.toString());
+    }
+
     public void editChild(View view) {
         teamsFragment.editChild(view);
     }
