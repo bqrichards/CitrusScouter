@@ -16,6 +16,7 @@ import org.json.JSONStringer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,10 +120,10 @@ public class CitrusDb extends SQLiteOpenHelper  {
         // Try to load matchlist
         String contents = readFromFile(context, filename);
         if (contents == null) {
-            Log.d(MainActivity.LOG_TAG, "Matchlist " + filename + " not found. :(");
+            MainActivity.log("Matchlist " + filename + " not found. :(");
             return false;
         } else {
-            Log.d(MainActivity.LOG_TAG, "Found matchlist " + filename + "! Loading...");
+            MainActivity.log("Found matchlist " + filename + "! Loading...");
             try {
                 matchlist = new JSONArray(contents);
                 matchlistFilename = filename;
@@ -130,15 +131,23 @@ public class CitrusDb extends SQLiteOpenHelper  {
                 return true;
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.d(MainActivity.LOG_TAG, e.getMessage());
+                MainActivity.log(e.getMessage());
                 return false;
             }
         }
     }
 
+    public void deleteMatchlist(Context context) {
+        context.deleteFile(matchlistFilename);
+        matchlist = null;
+        Toast.makeText(context, "Deleted " + matchlistFilename, Toast.LENGTH_LONG).show();
+        matchlistFilename = null;
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("MATCHLIST_FILENAME", matchlistFilename).apply();
+    }
+
     public void save(Context context) {
-        Log.d(MainActivity.LOG_TAG, "Saving matchlist " + matchlistFilename);
         writeToFile(context, matchlistFilename, matchlist.toString());
+        Toast.makeText(context, "Saved " + matchlistFilename + " :P", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -200,7 +209,14 @@ public class CitrusDb extends SQLiteOpenHelper  {
 
     public File[] matchlists(Context context) {
         File path = context.getFilesDir();
-        // TODO - check for .matchlist file extention
-        return path.listFiles();
+        MatchlistFileFilter filter = new MatchlistFileFilter();
+        return path.listFiles(filter);
+    }
+
+    private class MatchlistFileFilter implements FileFilter {
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.getAbsolutePath().endsWith(".matchlist");
+        }
     }
 }

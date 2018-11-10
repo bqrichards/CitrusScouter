@@ -65,20 +65,16 @@ public class ViewMatchlistFragment extends Fragment {
             save();
             return true;
         } else if (id == R.id.action_load_matchlist) {
-            // TODO - show dialog with saves
             File[] localFiles = CitrusDb.getInstance().matchlists(getContext());
-            ArrayList<String> filenames = new ArrayList<>();
-            for (File f : localFiles) {
-                String filename = f.getName();
-                String ext = filename.substring(filename.lastIndexOf("."));
-                if (ext.equals(".matchlist")) {
-                    filenames.add(filename);
-                }
+            CharSequence[] filenames = new CharSequence[localFiles.length];
+            for (int i = 0; i < localFiles.length; i++) {
+                filenames[i] = localFiles[i].getName();
             }
-            showLoadMatchlistAlert(filenames.toArray(new CharSequence[]{}));
+            showLoadMatchlistAlert(filenames);
             return true;
-        } else if (id == R.id.action_edit_matchlist) {
-            // TODO - show edit screen
+        } else if (id == R.id.action_delete_matchlist) {
+            // TODO - show delete screen
+            showDeleteMatchlistAlert();
             return true;
         }
 
@@ -153,6 +149,25 @@ public class ViewMatchlistFragment extends Fragment {
                 .show();
     }
 
+    private void showDeleteMatchlistAlert() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("*Delete Matchlist*")
+                .setMessage("Please don't do this ;-; I have a family.")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CitrusDb.getInstance().deleteMatchlist(getContext());
+                        try {
+                            fill();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
     private void fill() throws JSONException {
         if (editTexts != null) { // Delete previous EditTexts
             for (int i = 0; i < editTexts.length; i++) {
@@ -161,6 +176,10 @@ public class ViewMatchlistFragment extends Fragment {
                     gridLayout.removeView(column);
                 }
             }
+        }
+
+        if (CitrusDb.getInstance().matchlist == null) {
+            return;
         }
 
         int rows = CitrusDb.getInstance().matchlist.length();
@@ -181,6 +200,9 @@ public class ViewMatchlistFragment extends Fragment {
 
             for (int j = 0; j < columns; j++) {
                 EditText editText = new EditText(getContext());
+                editText.setSingleLine();
+                editText.setMaxLines(1);
+                editText.setLines(1);
                 String teamNumber = CitrusDb.getInstance().matchlist.getJSONArray(i).getString(j);
                 editText.setText(teamNumber);
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams();

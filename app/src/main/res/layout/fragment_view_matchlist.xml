@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_matchlist_gridLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnCount="5">
+    android:padding="20dp">
+
+    <GridLayout
+        android:id="@+id/view_matchlist_gridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="5">
 
     <TextView
         android:id="@+id/textView"
@@ -56,4 +61,5 @@
         android:textAlignment="center"
         android:text="@string/blue_2" />
 
-</GridLayout>
+    </GridLayout>
+</android.support.v4.widget.NestedScrollView>
