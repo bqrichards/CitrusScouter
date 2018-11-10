@@ -16,4 +16,8 @@
     <item
         android:id="@+id/action_delete_matchlist"
         android:title="Delete Matchlist" />
+
+    <item
+        android:id="@+id/action_set_my_team_number"
+        android:title="Set My Team Number" />
 </menu>

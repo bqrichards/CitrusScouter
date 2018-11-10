@@ -127,6 +127,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
             try {
                 matchlist = new JSONArray(contents);
                 matchlistFilename = filename;
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("MATCHLIST_FILENAME", matchlistFilename).apply();
                 Toast.makeText(context, "Loaded previous matchlist " + filename, Toast.LENGTH_LONG).show();
                 return true;
             } catch (JSONException e) {
@@ -147,7 +148,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
 
     public void save(Context context) {
         writeToFile(context, matchlistFilename, matchlist.toString());
-        Toast.makeText(context, "Saved " + matchlistFilename + " :P", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Saved " + matchlistFilename, Toast.LENGTH_SHORT).show();
     }
 
     @Override

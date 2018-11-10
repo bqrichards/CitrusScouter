@@ -1,12 +1,16 @@
 package com.ftc5466.citrusscouter;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,9 +30,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.time.chrono.MinguoChronology;
 import java.util.ArrayList;
 
 public class ViewMatchlistFragment extends Fragment {
+    private String myTeamNumber;
     private EditText[][] editTexts;
     private GridLayout gridLayout;
 
@@ -37,6 +43,7 @@ public class ViewMatchlistFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_matchlist, container, false);
         setHasOptionsMenu(true);
+        myTeamNumber = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("MY_TEAM_NUMBER", null);
         gridLayout = rootView.findViewById(R.id.view_matchlist_gridLayout);
         try {
             if (CitrusDb.getInstance().matchlist != null) {
@@ -56,7 +63,6 @@ public class ViewMatchlistFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         if (id == R.id.action_new_matchlist) {
             showNewMatchlistAlert();
@@ -73,8 +79,10 @@ public class ViewMatchlistFragment extends Fragment {
             showLoadMatchlistAlert(filenames);
             return true;
         } else if (id == R.id.action_delete_matchlist) {
-            // TODO - show delete screen
             showDeleteMatchlistAlert();
+            return true;
+        } else if (id == R.id.action_set_my_team_number) {
+            showSetMyTeamNumberAlert();
             return true;
         }
 
@@ -168,6 +176,32 @@ public class ViewMatchlistFragment extends Fragment {
                 .show();
     }
 
+    private void showSetMyTeamNumberAlert() {
+        final EditText editText = new EditText(getContext());
+        editText.setHint("Team Number");
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        new AlertDialog.Builder(getContext())
+                .setTitle("Set my Team Number")
+                .setMessage("Please enter your team number below. This allows the matchlist to highlight matches you're in.")
+                .setView(editText)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            Integer.parseInt(editText.getText().toString());
+                            myTeamNumber = editText.getText().toString();
+                            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("MY_TEAM_NUMBER", myTeamNumber).apply();
+                            Toast.makeText(getContext(), "Please reload matchlist to highlight", Toast.LENGTH_LONG).show();
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Failed; Not a valid number", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
     private void fill() throws JSONException {
         if (editTexts != null) { // Delete previous EditTexts
             for (int i = 0; i < editTexts.length; i++) {
@@ -203,8 +237,12 @@ public class ViewMatchlistFragment extends Fragment {
                 editText.setSingleLine();
                 editText.setMaxLines(1);
                 editText.setLines(1);
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 String teamNumber = CitrusDb.getInstance().matchlist.getJSONArray(i).getString(j);
                 editText.setText(teamNumber);
+                if (myTeamNumber != null && myTeamNumber.equals(teamNumber)) {
+                    matchNumberTextView.setBackgroundColor(Color.YELLOW);
+                }
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams();
                 param.width = GridLayout.LayoutParams.WRAP_CONTENT;
                 param.height = GridLayout.LayoutParams.WRAP_CONTENT;
