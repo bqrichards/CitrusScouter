@@ -11,6 +11,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +38,17 @@ public class CitrusDb extends SQLiteOpenHelper  {
         if (matchlistFilename != null) {
             // Try to load matchlist
             String contents = readFromFile(context, matchlistFilename);
+            if (contents == null) {
+                Log.d(MainActivity.LOG_TAG, "Matchlist " + matchlistFilename + " not found. :(");
+            } else {
+                Log.d(MainActivity.LOG_TAG, "Found matchlist " + matchlistFilename + "! Loading...");
+                try {
+                    matchlist = new JSONArray(contents);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(MainActivity.LOG_TAG, e.getMessage());
+                }
+            }
         }
     }
 
@@ -48,8 +60,9 @@ public class CitrusDb extends SQLiteOpenHelper  {
         return db;
     }
 
-    public JSONArray newMatchlist(String filename, int matches) {
-        matchlistFilename = filename;
+    public JSONArray newMatchlist(Context context, String filename, int matches) {
+        matchlistFilename = filename + ".matchlist";
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("MATCHLIST_FILENAME", matchlistFilename).apply();
         matchlist = new JSONArray();
 
         for (int i = 0; i < matches; i++) {
@@ -60,6 +73,8 @@ public class CitrusDb extends SQLiteOpenHelper  {
             array.put(0);
             matchlist.put(array);
         }
+
+        save(context);
 
         return matchlist;
     }
@@ -111,8 +126,9 @@ public class CitrusDb extends SQLiteOpenHelper  {
         }
     }
 
-    public void save() {
-        // TODO - write matchlist to disk
+    public void save(Context context) {
+        Log.d(MainActivity.LOG_TAG, "Saving matchlist " + matchlistFilename);
+        writeToFile(context, matchlistFilename, matchlist.toString());
     }
 
     @Override
@@ -146,7 +162,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
 
     // https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android
     private String readFromFile(Context context, String filename) {
-        String ret = "";
+        String ret = null;
 
         try {
             InputStream inputStream = context.openFileInput(filename);
@@ -156,7 +172,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String receiveString = "";
+            String receiveString;
             StringBuilder stringBuilder = new StringBuilder();
 
             while ( (receiveString = bufferedReader.readLine()) != null ) {
@@ -165,10 +181,8 @@ public class CitrusDb extends SQLiteOpenHelper  {
 
             inputStream.close();
             ret = stringBuilder.toString();
-        } catch (FileNotFoundException e) {
-            Log.e(MainActivity.LOG_TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.e(MainActivity.LOG_TAG, "Can not read file: " + e.toString());
+            e.printStackTrace();
         }
 
         return ret;

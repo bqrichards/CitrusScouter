@@ -34,6 +34,13 @@ public class ViewMatchlistFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_view_matchlist, container, false);
         setHasOptionsMenu(true);
         gridLayout = rootView.findViewById(R.id.view_matchlist_gridLayout);
+        try {
+            if (CitrusDb.getInstance().matchlist != null) {
+                fill();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return rootView;
     }
 
@@ -76,7 +83,7 @@ public class ViewMatchlistFragment extends Fragment {
                                 return;
                             }
 
-                            CitrusDb.getInstance().newMatchlist(filename, numberOfMatches);
+                            CitrusDb.getInstance().newMatchlist(getContext(), filename, numberOfMatches);
                             try {
                                 fill();
                             } catch (JSONException e) {
@@ -88,7 +95,6 @@ public class ViewMatchlistFragment extends Fragment {
                     .show();
             return true;
         } else if (id == R.id.action_save_matchlist) {
-            // TODO - save matchlist
             save();
             return true;
         } else if (id == R.id.action_load_matchlist) {
@@ -103,6 +109,15 @@ public class ViewMatchlistFragment extends Fragment {
     }
 
     private void fill() throws JSONException {
+        if (editTexts != null) { // Delete previous EditTexts
+            for (int i = 0; i < editTexts.length; i++) {
+                gridLayout.removeView(gridLayout.findViewWithTag(i+1));
+                for (EditText column : editTexts[i]) {
+                    gridLayout.removeView(column);
+                }
+            }
+        }
+
         int rows = CitrusDb.getInstance().matchlist.length();
         int columns = CitrusDb.getInstance().matchlist.getJSONArray(0).length();
         editTexts = new EditText[rows][columns];
@@ -110,6 +125,7 @@ public class ViewMatchlistFragment extends Fragment {
         for (int i = 0; i < rows; i++) {
             TextView matchNumberTextView = new TextView(getContext());
             matchNumberTextView.setText(String.valueOf(i+1));
+            matchNumberTextView.setTag(i+1);
             GridLayout.LayoutParams textParam = new GridLayout.LayoutParams();
             textParam.width = GridLayout.LayoutParams.WRAP_CONTENT;
             textParam.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -120,7 +136,8 @@ public class ViewMatchlistFragment extends Fragment {
 
             for (int j = 0; j < columns; j++) {
                 EditText editText = new EditText(getContext());
-                editText.setText("0");
+                String teamNumber = CitrusDb.getInstance().matchlist.getJSONArray(i).getString(j);
+                editText.setText(teamNumber);
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams();
                 param.width = GridLayout.LayoutParams.WRAP_CONTENT;
                 param.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -134,7 +151,6 @@ public class ViewMatchlistFragment extends Fragment {
     }
 
     private void save() {
-        Log.d(MainActivity.LOG_TAG, "Saving data!");
         for (int i = 0; i < editTexts.length; i++) {
             for (int j = 0; j < editTexts[i].length; j++) {
                 int teamNumber;
@@ -149,6 +165,6 @@ public class ViewMatchlistFragment extends Fragment {
             }
         }
 
-        CitrusDb.getInstance().save();
+        CitrusDb.getInstance().save(getContext());
     }
 }

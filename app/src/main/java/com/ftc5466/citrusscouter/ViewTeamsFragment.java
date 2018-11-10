@@ -1,10 +1,13 @@
 package com.ftc5466.citrusscouter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,10 +107,10 @@ public class ViewTeamsFragment extends Fragment {
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.list_child_item, parent, false);
             }
 
-            TextView mainView = convertView.findViewById(android.R.id.text1);
+            TextView mainView = convertView.findViewById(R.id.list_child_item_text);
             mainView.setText((getChild(groupPosition, childPosition)).toString());
 
             return convertView;
@@ -116,5 +120,32 @@ public class ViewTeamsFragment extends Fragment {
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return false;
         }
+    }
+
+    public void editChild(final View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle("Edit Team")
+                .setMessage("Are you sure you want to edit?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(MainActivity.LOG_TAG, "Edit team!");
+                    }
+                }).setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    public void deleteChild(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("*Delete Team* - This is pretty destructive!")
+                .setMessage("Are you sure you want to delete this team?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(MainActivity.LOG_TAG, "Delete team!");
+                    }
+                }).setNegativeButton(android.R.string.no, null)
+                .show();
     }
 }

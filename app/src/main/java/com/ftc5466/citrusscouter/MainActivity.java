@@ -16,9 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String LOG_TAG = "MY_LOGGING_TAG";
+    public static final String LOG_TAG = "LE_EPIC_LOGGING_TAG";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private final String MATCHLIST_TITLE = "Matchlist";
 
     private final int CHANGE_TEAM_INFO_REQUEST = 0;
-    private final int TAB_START_INDEX = 1; // Used for debugging, swiping to new tab every time is annoying
+    private final int TAB_START_INDEX = 0; // Used for debugging, swiping to new tab every time is annoying
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getText() == null) {
                     throw new IllegalArgumentException("Tab doesn't have a title!");
-                }
-
-                if (tab.getText().toString().equals(MATCHLIST_TITLE)) {
-                    // TODO - activate menu
                 }
             }
 
@@ -116,6 +113,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void editChild(View view) {
+        teamsFragment.editChild(view);
+    }
+
+    public void deleteChild(View view) {
+        teamsFragment.deleteChild(view);
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
