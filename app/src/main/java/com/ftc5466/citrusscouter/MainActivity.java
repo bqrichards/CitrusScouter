@@ -1,20 +1,17 @@
 package com.ftc5466.citrusscouter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,13 +65,32 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) { }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getBaseContext(), AddTeamActivity.class);
                 startActivityForResult(i, CHANGE_TEAM_INFO_REQUEST);
             }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {}
+
+            @Override
+            public void onPageSelected(int i) {
+                if (i != 0) {
+                    // Hide fab
+                    fab.hide();
+                } else {
+                    // Make fab visible
+                    fab.show();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {}
         });
 
         mViewPager.setCurrentItem(TAB_START_INDEX, true);
@@ -87,21 +103,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHANGE_TEAM_INFO_REQUEST) {
-            // Tell view fragment to refresh
             teamsFragment.refresh();
         }
     }
 
     public static void log(Object o) {
         Log.e(LOG_TAG, o.toString());
-    }
-
-    public void editChild(View view) {
-        teamsFragment.editChild(view);
-    }
-
-    public void deleteChild(View view) {
-        teamsFragment.deleteChild(view);
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {

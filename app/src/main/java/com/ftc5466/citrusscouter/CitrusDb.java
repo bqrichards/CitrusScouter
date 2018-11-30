@@ -85,7 +85,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         values.put(TeamsContract.COLUMN_PARTIAL_PARK, team.isPartialParkInCrater());
         values.put(TeamsContract.COLUMN_FULL_PARK, team.isFullParkInCrater());
 
-        db.insert(TeamsContract.TABLE_NAME, null, values);
+        db.replace(TeamsContract.TABLE_NAME, null, values);
     }
 
     public ArrayList<Team> getTeams() {
@@ -101,6 +101,38 @@ public class CitrusDb extends SQLiteOpenHelper  {
         cursor.close();
 
         return results;
+    }
+
+    public Team getTeam(int teamNumber) {
+        Team returnTeam = null;
+
+        String selection = TeamsContract.COLUMN_TEAM_NUMBER + "=?";
+        String[] selectionArgs = {String.valueOf(teamNumber)};
+
+        Cursor cursor = getReadableDatabase().query(TeamsContract.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            returnTeam = new Team(cursor);
+        }
+
+        cursor.close();
+        return returnTeam;
+    }
+
+    public Team getTeam(String teamName) {
+        Team returnTeam = null;
+
+        String selection = TeamsContract.COLUMN_TEAM_NAME + "=?";
+        String[] selectionArgs = {String.valueOf(teamName)};
+
+        Cursor cursor = getReadableDatabase().query(TeamsContract.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            returnTeam = new Team(cursor);
+        }
+
+        cursor.close();
+        return returnTeam;
     }
 
     public void insertTeamIntoMatchlist(int teamNumber, int row, int column) {

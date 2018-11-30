@@ -11,24 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/action_edit_child"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="editChild"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="Edit" />
-        <Button
-            android:id="@+id/action_delete_child"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="deleteChild"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="Delete" />
-    </LinearLayout>
 </LinearLayout>

@@ -28,6 +28,14 @@
         android:hint="@string/team_number"
         android:inputType="number" />
 
+    <Button
+        android:id="@+id/auto_fill_button"
+        android:text="@string/auto_fill"
+        android:onClick="autoFill"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,6 +155,13 @@
             android:layout_weight="1"
             android:text="@string/full" />
     </RadioGroup>
+    
+    <EditText
+        android:id="@+id/notes_editText"
+        android:hint="@string/notes"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="text" />
 
     <Button
         android:layout_width="match_parent"

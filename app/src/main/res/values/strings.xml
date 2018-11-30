@@ -27,4 +27,6 @@
     <string name="partial">Partial</string>
     <string name="full">Full</string>
     <string name="save">Save</string>
+    <string name="auto_fill">Auto-Fill</string>
+    <string name="notes">Notes</string>
 </resources>

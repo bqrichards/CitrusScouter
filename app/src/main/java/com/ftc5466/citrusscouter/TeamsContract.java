@@ -16,9 +16,8 @@ public class TeamsContract implements BaseColumns {
     public static final String COLUMN_PARTIAL_PARK = "partialPark";
     public static final String COLUMN_FULL_PARK = "fullPark";
     public static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + TABLE_NAME + "(" +
-            _ID + "INTEGER PRIMARY KEY," +
+            COLUMN_TEAM_NUMBER + " INTEGER PRIMARY KEY," +
             COLUMN_TEAM_NAME + " TEXT," +
-            COLUMN_TEAM_NUMBER + " INTEGER," +
             COLUMN_BEGINS_LATCHED + " BOOLEAN," +
             COLUMN_CLAIMS_DEPOT + " BOOLEAN," +
             COLUMN_DETECTS_GOLD_MINERAL + " BOOLEAN," +

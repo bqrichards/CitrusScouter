@@ -1,12 +1,9 @@
 package com.ftc5466.citrusscouter;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,34 +110,5 @@ public class ViewTeamsFragment extends Fragment {
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return false;
         }
-    }
-
-    // TODO implement
-    public void editChild(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setTitle("Edit Team")
-                .setMessage("Are you sure you want to edit?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(MainActivity.LOG_TAG, "Edit team!");
-                    }
-                }).setNegativeButton(android.R.string.no, null)
-                .show();
-    }
-
-    // TODO implement
-    public void deleteChild(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("*Delete Team* - This is pretty destructive!")
-                .setMessage("Are you sure you want to delete this team?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(MainActivity.LOG_TAG, "Delete team!");
-                    }
-                }).setNegativeButton(android.R.string.no, null)
-                .show();
     }
 }

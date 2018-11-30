@@ -3,7 +3,10 @@ package com.ftc5466.citrusscouter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -24,6 +27,13 @@ public class AddTeamActivity extends AppCompatActivity {
     private CheckBox endsLatchedCheckBox;
     private RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
 
+    // Other
+    private Button autoFillButton;
+    private Team possibleAutoFillTeam;
+    private enum AutoFillEntryField {
+        TEAM_NAME, TEAM_NUMBER
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +41,9 @@ public class AddTeamActivity extends AppCompatActivity {
 
         teamNameEditText = findViewById(R.id.team_name_editText);
         teamNumberEditText = findViewById(R.id.team_number_editText);
+
+        teamNameEditText.addTextChangedListener(new AutoFillTextWatcher(AutoFillEntryField.TEAM_NAME));
+        teamNumberEditText.addTextChangedListener(new AutoFillTextWatcher(AutoFillEntryField.TEAM_NUMBER));
 
         beginsLatchedCheckBox = findViewById(R.id.begins_latched_checkBox);
         claimsDepotCheckBox = findViewById(R.id.claim_depot_checkBox);
@@ -44,6 +57,8 @@ public class AddTeamActivity extends AppCompatActivity {
         craterParkingNoRadioButton = findViewById(R.id.crater_parking_no_radioButton);
         craterParkingPartialRadioButton = findViewById(R.id.crater_parking_partial_radioButton);
         craterParkingFullRadioButton = findViewById(R.id.crater_parking_full_radioButton);
+
+        autoFillButton = findViewById(R.id.auto_fill_button);
     }
 
     public void save(View view) {
@@ -65,11 +80,9 @@ public class AddTeamActivity extends AppCompatActivity {
         boolean parkInCrater = parkInCraterCheckBox.isChecked();
 
         if (mineralsInDepotEditText.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Minerals in Depot cannot be blank", Toast.LENGTH_LONG).show();
-            return;
+            mineralsInDepotEditText.setText("0");
         } else if (mineralsInLanderEditText.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Minerals in Lander cannot be blank", Toast.LENGTH_LONG).show();
-            return;
+            mineralsInLanderEditText.setText("0");
         }
 
         int mineralsInDepot = Integer.valueOf(mineralsInDepotEditText.getText().toString());
@@ -95,5 +108,73 @@ public class AddTeamActivity extends AppCompatActivity {
 
         setResult(0);
         finish();
+    }
+
+    public void autoFill(View view) {
+        if (possibleAutoFillTeam == null) { return; }
+
+        teamNameEditText.setText(possibleAutoFillTeam.getTeamName());
+        teamNumberEditText.setText(String.valueOf(possibleAutoFillTeam.getTeamNumber()));
+
+        // Autonomous
+        beginsLatchedCheckBox.setChecked(possibleAutoFillTeam.beginsLatched());
+        claimsDepotCheckBox.setChecked(possibleAutoFillTeam.isClaimsDepot());
+        detectsGoldMineralCheckBox.setChecked(possibleAutoFillTeam.canDetectGoldMineral());
+        parkInCraterCheckBox.setChecked(possibleAutoFillTeam.isParkInCraterAutonomous());
+
+        // TeleOp
+        mineralsInDepotEditText.setText(String.valueOf(possibleAutoFillTeam.getMineralsInDepot()));
+        mineralsInLanderEditText.setText(String.valueOf(possibleAutoFillTeam.getMineralsInLander()));
+
+        // End Game
+        endsLatchedCheckBox.setChecked(possibleAutoFillTeam.isEndsLatched());
+
+        if (possibleAutoFillTeam.isPartialParkInCrater()) {
+            craterParkingPartialRadioButton.toggle();
+        } else if (possibleAutoFillTeam.isFullParkInCrater()) {
+            craterParkingFullRadioButton.toggle();
+        } else {
+            craterParkingNoRadioButton.toggle();
+        }
+    }
+
+    private class AutoFillTextWatcher implements TextWatcher {
+        AutoFillEntryField entryField;
+
+        public AutoFillTextWatcher(AutoFillEntryField entryField) {
+            this.entryField = entryField;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            Team possibleTeam = null;
+
+            if (entryField == AutoFillEntryField.TEAM_NUMBER) {
+                try {
+                    int teamNumber = Integer.parseInt(s.toString());
+                    possibleTeam = CitrusDb.getInstance().getTeam(teamNumber);
+                } catch (NumberFormatException ignored) {}
+            } else if (entryField == AutoFillEntryField.TEAM_NAME) {
+                possibleTeam = CitrusDb.getInstance().getTeam(s.toString());
+            }
+
+            if (possibleTeam == null) {
+                if (autoFillButton.getVisibility() == View.VISIBLE) {
+                    autoFillButton.setVisibility(View.GONE);
+                    possibleAutoFillTeam = null;
+                }
+            } else {
+                if (autoFillButton.getVisibility() == View.GONE) {
+                    autoFillButton.setVisibility(View.VISIBLE);
+                    possibleAutoFillTeam = possibleTeam;
+                }
+            }
+        }
     }
 }
