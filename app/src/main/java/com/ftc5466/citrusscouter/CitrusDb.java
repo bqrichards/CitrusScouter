@@ -77,6 +77,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         values.put(TeamsContract.COLUMN_CLAIMS_DEPOT, team.isClaimsDepot());
         values.put(TeamsContract.COLUMN_DETECTS_GOLD_MINERAL, team.canDetectGoldMineral());
         values.put(TeamsContract.COLUMN_PARKS_IN_CRATER_AUTONOMOUS, team.isParkInCraterAutonomous());
+        values.put(TeamsContract.COLUMN_PREFERRED_AUTO_START, team.getPreferredAutoStart());
         // TeleOp
         values.put(TeamsContract.COLUMN_MINERALS_IN_DEPOT, team.getMineralsInDepot());
         values.put(TeamsContract.COLUMN_MINERALS_IN_LANDER, team.getMineralsInLander());

@@ -13,6 +13,7 @@ public class Team {
     private boolean claimsDepot;
     private boolean detectGoldMineral;
     private boolean parkInCraterAutonomous;
+    private String preferredAutoStart;
 
     // TeleOp Data
     private int mineralsInDepot;
@@ -25,21 +26,8 @@ public class Team {
 
     private String notes;
 
-    public Team(String name, int number) {
-        teamName = name;
-        teamNumber = number;
-        beginsLatched = false;
-        claimsDepot = false;
-        detectGoldMineral = false;
-        parkInCraterAutonomous = false;
+    public Team() {
 
-        mineralsInDepot = 0;
-        mineralsInLander = 0;
-
-        endsLatched = false;
-        partialParkInCrater = false;
-        fullParkInCrater = false;
-        notes = "";
     }
 
     /**
@@ -54,6 +42,7 @@ public class Team {
         claimsDepot = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_CLAIMS_DEPOT)) == 1;
         detectGoldMineral = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_DETECTS_GOLD_MINERAL)) == 1;
         parkInCraterAutonomous = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_PARKS_IN_CRATER_AUTONOMOUS)) == 1;
+        preferredAutoStart = cursor.getString(cursor.getColumnIndex(TeamsContract.COLUMN_PREFERRED_AUTO_START));
 
         mineralsInDepot = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_MINERALS_IN_DEPOT));
         mineralsInLander = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_MINERALS_IN_LANDER));
@@ -113,6 +102,14 @@ public class Team {
         this.parkInCraterAutonomous = parkInCraterAutonomous;
     }
 
+    public String getPreferredAutoStart() {
+        return preferredAutoStart;
+    }
+
+    public void setPreferredAutoStart(String preferredAutoStart) {
+        this.preferredAutoStart = preferredAutoStart;
+    }
+
     public int getMineralsInDepot() {
         return mineralsInDepot;
     }
@@ -170,6 +167,7 @@ public class Team {
         sb += "Claims Depot: %s\n";
         sb += "Detects Gold Mineral: %s\n";
         sb += "Parks in Crater: %s\n";
+        sb += "Preferred Auto Start: %s\n";
         sb += "\nTeleOp\n";
         sb += "Minerals in Depot: %d\n";
         sb += "Minerals in Lander: %d\n";
@@ -180,8 +178,8 @@ public class Team {
         sb += "Notes: %s";
 
         String s = String.format(sb,
-                beginsLatched, claimsDepot, detectGoldMineral, parkInCraterAutonomous,
-                mineralsInDepot, mineralsInLander, endsLatched, partialParkInCrater, fullParkInCrater, notes);
+                beginsLatched, claimsDepot, detectGoldMineral, parkInCraterAutonomous, preferredAutoStart,
+                mineralsInDepot, mineralsInLander, endsLatched, partialParkInCrater, fullParkInCrater, notes.isEmpty() ? "None" : notes);
 
         s = s.replaceAll("false", "No");
         s = s.replaceAll("true", "Yes");

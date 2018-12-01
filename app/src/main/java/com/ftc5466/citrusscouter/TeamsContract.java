@@ -10,6 +10,7 @@ public class TeamsContract implements BaseColumns {
     public static final String COLUMN_CLAIMS_DEPOT = "claimsDepot";
     public static final String COLUMN_DETECTS_GOLD_MINERAL = "detectsGoldMineral";
     public static final String COLUMN_PARKS_IN_CRATER_AUTONOMOUS = "parksInCraterAutonomous";
+    public static final String COLUMN_PREFERRED_AUTO_START = "preferredAutoStart";
     public static final String COLUMN_MINERALS_IN_DEPOT = "mineralsInDepot";
     public static final String COLUMN_MINERALS_IN_LANDER = "mineralsInLander";
     public static final String COLUMN_ENDS_LATCHED = "endsLatched";
@@ -23,6 +24,7 @@ public class TeamsContract implements BaseColumns {
             COLUMN_CLAIMS_DEPOT + " BOOLEAN," +
             COLUMN_DETECTS_GOLD_MINERAL + " BOOLEAN," +
             COLUMN_PARKS_IN_CRATER_AUTONOMOUS + " BOOLEAN," +
+            COLUMN_PREFERRED_AUTO_START + " TEXT," +
             COLUMN_MINERALS_IN_DEPOT + " INTEGER," +
             COLUMN_MINERALS_IN_LANDER + " INTEGER," +
             COLUMN_ENDS_LATCHED + " BOOLEAN," +

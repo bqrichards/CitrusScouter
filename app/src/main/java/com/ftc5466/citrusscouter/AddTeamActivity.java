@@ -19,6 +19,8 @@ public class AddTeamActivity extends AppCompatActivity {
     // Autonomous
     private CheckBox beginsLatchedCheckBox, claimsDepotCheckBox;
     private CheckBox detectsGoldMineralCheckBox, parkInCraterCheckBox;
+    private RadioButton preferredAutoNeitherRadioButton, preferredAutoCraterRadioButton,
+            preferredAutoDepotRadioButton, preferredAutoEitherRadioButton;
 
     // TeleOp
     private EditText mineralsInDepotEditText, mineralsInLanderEditText;
@@ -51,6 +53,10 @@ public class AddTeamActivity extends AppCompatActivity {
         claimsDepotCheckBox = findViewById(R.id.claim_depot_checkBox);
         detectsGoldMineralCheckBox = findViewById(R.id.detect_gold_mineral_checkBox);
         parkInCraterCheckBox = findViewById(R.id.park_in_crater_autonomous_checkBox);
+        preferredAutoNeitherRadioButton = findViewById(R.id.preferred_auto_neither_radioButton);
+        preferredAutoCraterRadioButton = findViewById(R.id.preferred_auto_crater_radioButton);
+        preferredAutoDepotRadioButton = findViewById(R.id.preferred_auto_depot_radioButton);
+        preferredAutoEitherRadioButton = findViewById(R.id.preferred_auto_either_radioButton);
 
         mineralsInDepotEditText = findViewById(R.id.minerals_in_depot_editText);
         mineralsInLanderEditText = findViewById(R.id.minerals_in_lander_editText);
@@ -81,6 +87,24 @@ public class AddTeamActivity extends AppCompatActivity {
         boolean claimsDepot = claimsDepotCheckBox.isChecked();
         boolean detectsGoldMineral = detectsGoldMineralCheckBox.isChecked();
         boolean parkInCrater = parkInCraterCheckBox.isChecked();
+
+        String preferredAutoStartKey;
+        boolean autoNeither = preferredAutoNeitherRadioButton.isChecked();
+        boolean autoCrater = preferredAutoCraterRadioButton.isChecked();
+        boolean autoDepot = preferredAutoDepotRadioButton.isChecked();
+        boolean autoEither = preferredAutoEitherRadioButton.isChecked();
+        if (!autoNeither && !autoCrater && !autoDepot && !autoEither) {
+            Toast.makeText(this, "Select preferred autonomous start", Toast.LENGTH_LONG).show();
+            return;
+        } else if (autoNeither) {
+            preferredAutoStartKey = "Neither";
+        } else if (autoCrater) {
+            preferredAutoStartKey = "Crater";
+        } else if (autoDepot) {
+            preferredAutoStartKey = "Depot";
+        } else  {
+            preferredAutoStartKey = "Either";
+        }
 
         int mineralsInDepot;
         if (mineralsInDepotEditText.getText() == null ||
@@ -115,11 +139,14 @@ public class AddTeamActivity extends AppCompatActivity {
             notes = notesEditText.getText().toString();
         } catch (NullPointerException ignored) {}
 
-        Team newTeam = new Team(teamName, teamNumber);
+        Team newTeam = new Team();
+        newTeam.setTeamName(teamName);
+        newTeam.setTeamNumber(teamNumber);
         newTeam.setBeginsLatched(beginsLatched);
         newTeam.setClaimsDepot(claimsDepot);
         newTeam.setDetectGoldMineral(detectsGoldMineral);
         newTeam.setParkInCraterAutonomous(parkInCrater);
+        newTeam.setPreferredAutoStart(preferredAutoStartKey);
         newTeam.setMineralsInDepot(mineralsInDepot);
         newTeam.setMineralsInLander(mineralsInLander);
         newTeam.setEndsLatched(endsLatched);
@@ -145,6 +172,15 @@ public class AddTeamActivity extends AppCompatActivity {
         claimsDepotCheckBox.setChecked(possibleAutoFillTeam.isClaimsDepot());
         detectsGoldMineralCheckBox.setChecked(possibleAutoFillTeam.canDetectGoldMineral());
         parkInCraterCheckBox.setChecked(possibleAutoFillTeam.isParkInCraterAutonomous());
+        if (possibleAutoFillTeam.getPreferredAutoStart().equals("Neither")) {
+            preferredAutoNeitherRadioButton.toggle();
+        } else if (possibleAutoFillTeam.getPreferredAutoStart().equals("Depot")) {
+            preferredAutoDepotRadioButton.toggle();
+        } else if (possibleAutoFillTeam.getPreferredAutoStart().equals("Crater")) {
+            preferredAutoCraterRadioButton.toggle();
+        } else {
+            preferredAutoEitherRadioButton.toggle();
+        }
 
         // TeleOp
         mineralsInDepotEditText.setText(String.valueOf(possibleAutoFillTeam.getMineralsInDepot()));
