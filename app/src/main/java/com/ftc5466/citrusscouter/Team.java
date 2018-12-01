@@ -23,6 +23,8 @@ public class Team {
     private boolean partialParkInCrater;
     private boolean fullParkInCrater;
 
+    private String notes;
+
     public Team(String name, int number) {
         teamName = name;
         teamNumber = number;
@@ -37,6 +39,7 @@ public class Team {
         endsLatched = false;
         partialParkInCrater = false;
         fullParkInCrater = false;
+        notes = "";
     }
 
     /**
@@ -58,6 +61,8 @@ public class Team {
         endsLatched = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_ENDS_LATCHED)) == 1;
         partialParkInCrater = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_PARTIAL_PARK)) == 1;
         fullParkInCrater = cursor.getInt(cursor.getColumnIndex(TeamsContract.COLUMN_FULL_PARK)) == 1;
+
+        notes = cursor.getString(cursor.getColumnIndex(TeamsContract.COLUMN_NOTES));
     }
 
     public String getTeamName() {
@@ -148,6 +153,14 @@ public class Team {
         this.fullParkInCrater = fullParkInCrater;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -164,10 +177,11 @@ public class Team {
         sb += "Ends Game Latched: %s\n";
         sb += "Partial Park In Crater: %s\n";
         sb += "Full Park In Crater: %s\n";
+        sb += "Notes: %s";
 
         String s = String.format(sb,
                 beginsLatched, claimsDepot, detectGoldMineral, parkInCraterAutonomous,
-                mineralsInDepot, mineralsInLander, endsLatched, partialParkInCrater, fullParkInCrater);
+                mineralsInDepot, mineralsInLander, endsLatched, partialParkInCrater, fullParkInCrater, notes);
 
         s = s.replaceAll("false", "No");
         s = s.replaceAll("true", "Yes");

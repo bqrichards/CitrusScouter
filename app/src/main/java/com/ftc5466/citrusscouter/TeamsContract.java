@@ -15,6 +15,7 @@ public class TeamsContract implements BaseColumns {
     public static final String COLUMN_ENDS_LATCHED = "endsLatched";
     public static final String COLUMN_PARTIAL_PARK = "partialPark";
     public static final String COLUMN_FULL_PARK = "fullPark";
+    public static final String COLUMN_NOTES = "notes";
     public static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + TABLE_NAME + "(" +
             COLUMN_TEAM_NUMBER + " INTEGER PRIMARY KEY," +
             COLUMN_TEAM_NAME + " TEXT," +
@@ -26,13 +27,8 @@ public class TeamsContract implements BaseColumns {
             COLUMN_MINERALS_IN_LANDER + " INTEGER," +
             COLUMN_ENDS_LATCHED + " BOOLEAN," +
             COLUMN_PARTIAL_PARK + " BOOLEAN," +
-            COLUMN_FULL_PARK + " BOOLEAN)";
+            COLUMN_FULL_PARK + " BOOLEAN," +
+            COLUMN_NOTES + " TEXT)";
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
-    public static final String[] KEYS = {
-            BaseColumns._ID, COLUMN_TEAM_NAME, COLUMN_TEAM_NUMBER,
-            COLUMN_BEGINS_LATCHED, COLUMN_CLAIMS_DEPOT, COLUMN_DETECTS_GOLD_MINERAL,
-            COLUMN_PARKS_IN_CRATER_AUTONOMOUS, COLUMN_MINERALS_IN_DEPOT, COLUMN_MINERALS_IN_LANDER,
-            COLUMN_ENDS_LATCHED, COLUMN_PARTIAL_PARK, COLUMN_FULL_PARK
-    };
 }

@@ -1,172 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/team_information"
-        android:textStyle="bold"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/team_name_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/team_name"
-        android:inputType="textPersonName"
-        android:textColorHighlight="@color/colorPrimary"/>
-
-    <EditText
-        android:id="@+id/team_number_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/team_number"
-        android:inputType="number" />
-
-    <Button
-        android:id="@+id/auto_fill_button"
-        android:text="@string/auto_fill"
-        android:onClick="autoFill"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/autonomous"
-        android:textStyle="bold"
-        android:textSize="20sp" />
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/team_information"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/team_name_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/team_name"
+            android:inputType="textPersonName"
+            android:textColorHighlight="@color/colorPrimary"/>
+
+        <EditText
+            android:id="@+id/team_number_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/team_number"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/auto_fill_button"
+            android:text="@string/auto_fill"
+            android:onClick="autoFill"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/autonomous"
+            android:textStyle="bold"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/begins_latched_checkBox"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/begins_latched" />
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/claim_depot_checkBox"
-                android:layout_width="wrap_content"
+                <CheckBox
+                    android:id="@+id/begins_latched_checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/begins_latched" />
+
+                <CheckBox
+                    android:id="@+id/claim_depot_checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/claim_depot" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/claim_depot" />
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/detect_gold_mineral_checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/detect_gold" />
+
+                <CheckBox
+                    android:id="@+id/park_in_crater_autonomous_checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/park_in_crater" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/teleop"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/minerals_in_depot_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="@string/minerals_in_depot" />
+
+        <EditText
+            android:id="@+id/minerals_in_lander_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="@string/minerals_in_lander" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/end_game"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <CheckBox
+            android:id="@+id/ends_latched_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ends_latched" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crater_parking"/>
+
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/detect_gold_mineral_checkBox"
+            <RadioButton
+                android:id="@+id/crater_parking_no_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/detect_gold" />
+                android:text="@string/no" />
 
-            <CheckBox
-                android:id="@+id/park_in_crater_autonomous_checkBox"
+            <RadioButton
+                android:id="@+id/crater_parking_partial_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/park_in_crater" />
-        </LinearLayout>
+                android:text="@string/partial" />
 
+            <RadioButton
+                android:id="@+id/crater_parking_full_radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/full" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/notes_editText"
+            android:hint="@string/notes"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="text" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:onClick="save" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/teleop"
-        android:textStyle="bold"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/minerals_in_depot_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/minerals_in_depot" />
-
-    <EditText
-        android:id="@+id/minerals_in_lander_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/minerals_in_lander" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/end_game"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-    <CheckBox
-        android:id="@+id/ends_latched_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ends_latched" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/crater_parking"/>
-
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/crater_parking_no_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/no" />
-
-        <RadioButton
-            android:id="@+id/crater_parking_partial_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/partial" />
-
-        <RadioButton
-            android:id="@+id/crater_parking_full_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/full" />
-    </RadioGroup>
-    
-    <EditText
-        android:id="@+id/notes_editText"
-        android:hint="@string/notes"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="text" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
-        android:onClick="save" />
-
-</LinearLayout>
+</ScrollView>

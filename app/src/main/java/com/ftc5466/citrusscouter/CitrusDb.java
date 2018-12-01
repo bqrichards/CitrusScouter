@@ -84,6 +84,7 @@ public class CitrusDb extends SQLiteOpenHelper  {
         values.put(TeamsContract.COLUMN_ENDS_LATCHED, team.isEndsLatched());
         values.put(TeamsContract.COLUMN_PARTIAL_PARK, team.isPartialParkInCrater());
         values.put(TeamsContract.COLUMN_FULL_PARK, team.isFullParkInCrater());
+        values.put(TeamsContract.COLUMN_NOTES, team.getNotes());
 
         db.replace(TeamsContract.TABLE_NAME, null, values);
     }

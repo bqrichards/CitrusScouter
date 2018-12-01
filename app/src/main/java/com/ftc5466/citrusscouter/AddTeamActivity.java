@@ -27,6 +27,8 @@ public class AddTeamActivity extends AppCompatActivity {
     private CheckBox endsLatchedCheckBox;
     private RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
 
+    private EditText notesEditText;
+
     // Other
     private Button autoFillButton;
     private Team possibleAutoFillTeam;
@@ -58,6 +60,7 @@ public class AddTeamActivity extends AppCompatActivity {
         craterParkingPartialRadioButton = findViewById(R.id.crater_parking_partial_radioButton);
         craterParkingFullRadioButton = findViewById(R.id.crater_parking_full_radioButton);
 
+        notesEditText = findViewById(R.id.notes_editText);
         autoFillButton = findViewById(R.id.auto_fill_button);
     }
 
@@ -79,18 +82,38 @@ public class AddTeamActivity extends AppCompatActivity {
         boolean detectsGoldMineral = detectsGoldMineralCheckBox.isChecked();
         boolean parkInCrater = parkInCraterCheckBox.isChecked();
 
-        if (mineralsInDepotEditText.getText().toString().isEmpty()) {
-            mineralsInDepotEditText.setText("0");
-        } else if (mineralsInLanderEditText.getText().toString().isEmpty()) {
-            mineralsInLanderEditText.setText("0");
+        int mineralsInDepot;
+        if (mineralsInDepotEditText.getText() == null ||
+                mineralsInDepotEditText.getText().toString().isEmpty()) {
+            mineralsInDepot = 0;
+        } else {
+            try {
+                mineralsInDepot = Integer.valueOf(mineralsInDepotEditText.getText().toString());
+            } catch (NumberFormatException e) {
+                mineralsInDepot = 0;
+            }
         }
 
-        int mineralsInDepot = Integer.valueOf(mineralsInDepotEditText.getText().toString());
-        int mineralsInLander = Integer.valueOf(mineralsInLanderEditText.getText().toString());
+        int mineralsInLander;
+        if (mineralsInLanderEditText.getText() == null ||
+                mineralsInLanderEditText.getText().toString().isEmpty()) {
+            mineralsInLander = 0;
+        } else {
+            try {
+                mineralsInLander = Integer.valueOf(mineralsInLanderEditText.getText().toString());
+            } catch (NumberFormatException e) {
+                mineralsInLander = 0;
+            }
+        }
 
         boolean endsLatched = endsLatchedCheckBox.isChecked();
         boolean craterParkingPartial = craterParkingPartialRadioButton.isChecked();
         boolean craterPartialFull = craterParkingFullRadioButton.isChecked();
+
+        String notes = "";
+        try {
+            notes = notesEditText.getText().toString();
+        } catch (NullPointerException ignored) {}
 
         Team newTeam = new Team(teamName, teamNumber);
         newTeam.setBeginsLatched(beginsLatched);
@@ -102,6 +125,7 @@ public class AddTeamActivity extends AppCompatActivity {
         newTeam.setEndsLatched(endsLatched);
         newTeam.setPartialParkInCrater(craterParkingPartial);
         newTeam.setFullParkInCrater(craterPartialFull);
+        newTeam.setNotes(notes);
 
         CitrusDb.getInstance().insertTeam(newTeam);
         Toast.makeText(this, "Team saved!", Toast.LENGTH_SHORT).show();
@@ -136,6 +160,8 @@ public class AddTeamActivity extends AppCompatActivity {
         } else {
             craterParkingNoRadioButton.toggle();
         }
+
+        notesEditText.setText(possibleAutoFillTeam.getNotes());
     }
 
     private class AutoFillTextWatcher implements TextWatcher {
