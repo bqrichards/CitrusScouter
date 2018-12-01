@@ -158,6 +158,33 @@ public class Team {
         this.notes = notes;
     }
 
+    public String getExported() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(teamName).append(">")
+                .append(teamNumber).append(">")
+                .append(beginsLatched).append(">")
+                .append(claimsDepot).append(">")
+                .append(detectGoldMineral).append(">")
+                .append(parkInCraterAutonomous).append(">")
+                .append(preferredAutoStart).append(">")
+                .append(mineralsInDepot).append(">")
+                .append(mineralsInLander).append(">")
+                .append(endsLatched).append(">")
+                .append(partialParkInCrater).append(">")
+                .append(fullParkInCrater).append(">")
+                .append(notes).append(">");
+
+        String s = sb.toString();
+        s = s.replace("true", "t");
+        s = s.replace("false", "f");
+        s = s.replace("Crater", "c");
+        s = s.replace("Either", "e");
+        s = s.replace("Depot", "d");
+        s = s.replace("Neither", "n");
+
+        return s;
+    }
+
     @NonNull
     @Override
     public String toString() {

@@ -2,6 +2,8 @@ package com.ftc5466.citrusscouter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +18,18 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class ViewTeamsFragment extends Fragment {
     private ViewTeamDataAdapter adapter;
@@ -72,6 +81,27 @@ public class ViewTeamsFragment extends Fragment {
                     .setNegativeButton(android.R.string.no, null)
                     .show();
             return true;
+        } else if (id == R.id.action_export_to_qr) {
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                int width = 550, height = 550;
+                BitMatrix matrix = writer.encode(CitrusDb.getInstance().getExported(), BarcodeFormat.QR_CODE, width, height);
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bitmap.setPixel(x, y, matrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                ImageView imageView = new ImageView(getContext());
+                imageView.setImageBitmap(bitmap);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Exported Teams Database")
+                        .setView(imageView)
+                        .show();
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -85,7 +115,7 @@ public class ViewTeamsFragment extends Fragment {
     }
 
     private class ViewTeamDataAdapter extends BaseExpandableListAdapter {
-        private ArrayList<Team> groups;
+        private LinkedList<Team> groups;
 
         public ViewTeamDataAdapter() {
             groups = CitrusDb.getInstance().getTeams();

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class CitrusDb extends SQLiteOpenHelper  {
     private static final int DATABASE_VERSION = 1;
@@ -90,12 +91,12 @@ public class CitrusDb extends SQLiteOpenHelper  {
         db.replace(TeamsContract.TABLE_NAME, null, values);
     }
 
-    public ArrayList<Team> getTeams() {
+    public LinkedList<Team> getTeams() {
         SQLiteDatabase db = getReadableDatabase();
 
         String sortOrder = TeamsContract.COLUMN_TEAM_NUMBER + " ASC";
         Cursor cursor = db.query(TeamsContract.TABLE_NAME, null, null, null, null, null, sortOrder);
-        ArrayList<Team> results = new ArrayList<>();
+        LinkedList<Team> results = new LinkedList<>();
         while (cursor.moveToNext()) {
             results.add(new Team(cursor));
         }
@@ -181,6 +182,19 @@ public class CitrusDb extends SQLiteOpenHelper  {
     public void save(Context context) {
         writeToFile(context, matchlistFilename, matchlist.toString());
         Toast.makeText(context, "Saved " + matchlistFilename, Toast.LENGTH_SHORT).show();
+    }
+
+    public String getExported() {
+        StringBuilder sb = new StringBuilder();
+        LinkedList<Team> teams = getTeams();
+        for (int i = 0; i < teams.size(); i++) {
+            sb.append(teams.get(i).getExported());
+            if (i != teams.size() - 1) {
+                sb.append("|");
+            }
+        }
+
+        return sb.toString();
     }
 
     @Override
