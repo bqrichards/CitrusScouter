@@ -1,16 +1,25 @@
 package com.ftc5466.citrusscouter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ViewTeamsFragment extends Fragment {
@@ -25,7 +34,47 @@ public class ViewTeamsFragment extends Fragment {
         ExpandableListView listView = rootView.findViewById(R.id.view_teams_expandable_list_view);
         listView.setAdapter(adapter);
 
+        setHasOptionsMenu(true);
+
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_view_teams, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_delete_team) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            final EditText teamNumberEntryEditText = new EditText(getContext());
+            teamNumberEntryEditText.setHint(R.string.team_number);
+            teamNumberEntryEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            builder.setTitle("Delete Team")
+                    .setMessage("Enter the team number to completely disintegrate it.")
+                    .setView(teamNumberEntryEditText)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try { // Make sure text entered is actually a number
+                                Integer.parseInt(teamNumberEntryEditText.getText().toString());
+                            } catch (NumberFormatException e) {
+                                return;
+                            }
+
+                            CitrusDb.getInstance().deleteTeam(teamNumberEntryEditText.getText().toString());
+                            refresh();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**

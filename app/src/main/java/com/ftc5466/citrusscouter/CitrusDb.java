@@ -135,6 +135,10 @@ public class CitrusDb extends SQLiteOpenHelper  {
         return returnTeam;
     }
 
+    public void deleteTeam(String teamNumber) {
+        getWritableDatabase().delete(TeamsContract.TABLE_NAME, TeamsContract.COLUMN_TEAM_NUMBER + "=?", new String[]{teamNumber});
+    }
+
     public void insertTeamIntoMatchlist(int teamNumber, int row, int column) {
         try {
             matchlist.getJSONArray(row).put(column, teamNumber);
@@ -155,7 +159,6 @@ public class CitrusDb extends SQLiteOpenHelper  {
                 matchlist = new JSONArray(contents);
                 matchlistFilename = filename;
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("MATCHLIST_FILENAME", matchlistFilename).apply();
-                Toast.makeText(context, "Loaded previous matchlist " + filename, Toast.LENGTH_LONG).show();
                 return true;
             } catch (JSONException e) {
                 e.printStackTrace();
