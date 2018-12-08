@@ -2,6 +2,7 @@ package com.ftc5466.citrusscouter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -82,10 +83,16 @@ public class ViewTeamsFragment extends Fragment {
                     .show();
             return true;
         } else if (id == R.id.action_export_to_qr) {
+            String exported = CitrusDb.getInstance().getExported();
+            if (exported.isEmpty()) {
+                Toast.makeText(getContext(), "Cannot export empty database", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
             QRCodeWriter writer = new QRCodeWriter();
             try {
                 int width = 550, height = 550;
-                BitMatrix matrix = writer.encode(CitrusDb.getInstance().getExported(), BarcodeFormat.QR_CODE, width, height);
+                BitMatrix matrix = writer.encode(exported, BarcodeFormat.QR_CODE, width, height);
                 Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
                 for (int x = 0; x < width; x++) {
                     for (int y = 0; y < height; y++) {
@@ -101,6 +108,10 @@ public class ViewTeamsFragment extends Fragment {
             } catch (WriterException e) {
                 e.printStackTrace();
             }
+            return true;
+        } else if (id == R.id.action_import_from_qr) {
+            Intent intent = new Intent(getContext(), ImportFromQRActivity.class);
+            startActivity(intent);
             return true;
         }
 
