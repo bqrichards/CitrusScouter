@@ -45,7 +45,12 @@ public class ImportFromQRActivity extends Activity implements ZXingScannerView.R
 
     @Override
     public void handleResult(Result rawResult) {
-        Toast.makeText(this, rawResult.getText(), Toast.LENGTH_LONG).show();
+        String string = rawResult.getText();
+        if (string.isEmpty()) { return; }
+
+        CitrusDb.getInstance().importFromString(string);
+        setResult(0);
+        finish();
     }
 
     @Override

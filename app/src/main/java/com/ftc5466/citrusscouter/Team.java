@@ -54,6 +54,38 @@ public class Team {
         notes = cursor.getString(cursor.getColumnIndex(TeamsContract.COLUMN_NOTES));
     }
 
+    public Team(String exportedDatabaseString) {
+        MainActivity.log("Trying to decode: " + exportedDatabaseString);
+        String[] components = exportedDatabaseString.split(">");
+        teamName = components[0];
+        teamNumber = Integer.parseInt(components[1]);
+        beginsLatched = components[2].equals("t");
+        claimsDepot = components[3].equals("t");
+        detectGoldMineral = components[4].equals("t");
+        parkInCraterAutonomous = components[5].equals("t");
+        String prefAuto = components[6];
+        if (prefAuto.equals("n")) {
+            preferredAutoStart = "Neither";
+        } else if (prefAuto.equals("d")) {
+            preferredAutoStart = "Depot";
+        } else if (prefAuto.equals("c")) {
+            preferredAutoStart = "Crater";
+        } else if (prefAuto.equals("e")) {
+            preferredAutoStart = "Either";
+        } else {
+            throw new IllegalArgumentException("Error decoding team. Preferred auto is not ndce");
+        }
+        mineralsInDepot = Integer.parseInt(components[7]);
+        mineralsInLander = Integer.parseInt(components[8]);
+        endsLatched = components[9].equals("t");
+        partialParkInCrater = components[10].equals("t");
+        fullParkInCrater = components[11].equals("t");
+        notes = components[12];
+        if (notes.equals("_")) {
+            notes = "";
+        }
+    }
+
     public String getTeamName() {
         return teamName;
     }
@@ -172,7 +204,7 @@ public class Team {
                 .append(endsLatched).append(">")
                 .append(partialParkInCrater).append(">")
                 .append(fullParkInCrater).append(">")
-                .append(notes).append(">");
+                .append(notes.isEmpty() ? "_" : notes).append(">");
 
         String s = sb.toString();
         s = s.replace("true", "t");

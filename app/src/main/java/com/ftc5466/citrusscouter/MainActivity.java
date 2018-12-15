@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private final ViewMatchlistFragment matchlistFragment = new ViewMatchlistFragment();
     private final String MATCHLIST_TITLE = "Matchlist";
 
-    private final int CHANGE_TEAM_INFO_REQUEST = 0;
+    public static final int CHANGE_TEAM_INFO_REQUEST = 0;
+    public static final int IMPORT_FROM_QR_CODE_REQUEST = 1;
     private final int TAB_START_INDEX = 0; // Used for debugging, swiping to new tab every time is annoying
 
     @Override

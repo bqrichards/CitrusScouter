@@ -110,12 +110,21 @@ public class ViewTeamsFragment extends Fragment {
             }
             return true;
         } else if (id == R.id.action_import_from_qr) {
-            Intent intent = new Intent(getContext(), ImportFromQRActivity.class);
-            startActivity(intent);
+            Intent i = new Intent(getContext(), ImportFromQRActivity.class);
+            startActivityForResult(i, MainActivity.IMPORT_FROM_QR_CODE_REQUEST);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MainActivity.IMPORT_FROM_QR_CODE_REQUEST) {
+            refresh();
+        }
     }
 
     /**

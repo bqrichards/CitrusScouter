@@ -247,6 +247,10 @@ public class ViewMatchlistFragment extends Fragment {
     }
 
     private void save() {
+        if (editTexts == null) {
+            return;
+        }
+
         for (int i = 0; i < editTexts.length; i++) {
             for (int j = 0; j < editTexts[i].length; j++) {
                 int teamNumber;

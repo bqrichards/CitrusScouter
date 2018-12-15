@@ -184,6 +184,18 @@ public class CitrusDb extends SQLiteOpenHelper  {
         Toast.makeText(context, "Saved " + matchlistFilename, Toast.LENGTH_SHORT).show();
     }
 
+    public void importFromString(String databaseText) {
+        String[] teamStrings = databaseText.split("\\|");
+        if (teamStrings.length == 0) {
+            return;
+        }
+
+        for (int i = 0; i < teamStrings.length; i++) {
+            Team newTeam = new Team(teamStrings[i]);
+            insertTeam(newTeam);
+        }
+    }
+
     public String getExported() {
         StringBuilder sb = new StringBuilder();
         LinkedList<Team> teams = getTeams();
