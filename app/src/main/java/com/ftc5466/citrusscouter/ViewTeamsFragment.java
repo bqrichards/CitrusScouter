@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -31,6 +32,8 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import static com.ftc5466.citrusscouter.MainActivity.CHANGE_TEAM_INFO_REQUEST;
 
 public class ViewTeamsFragment extends Fragment {
     private ViewTeamDataAdapter adapter;
@@ -188,19 +191,51 @@ public class ViewTeamsFragment extends Fragment {
             }
 
             TextView mainView = convertView.findViewById(android.R.id.text1);
-            mainView.setText((String)getGroup(groupPosition));
+            mainView.setText((String) getGroup(groupPosition));
 
             return convertView;
         }
 
         @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getLayoutInflater().inflate(R.layout.list_child_item, parent, false);
             }
 
             TextView mainView = convertView.findViewById(R.id.list_child_item_text);
             mainView.setText((getChild(groupPosition, childPosition)).toString());
+
+            final String teamNumber = ((String) getGroup(groupPosition)).split(" -")[0];
+            Button editButton = convertView.findViewById(R.id.list_child_edit_button);
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getContext(), AddTeamActivity.class);
+                    i.putExtra(AddTeamActivity.PRESET_TEAM_NUMBER_INTENT_KEY, teamNumber);
+                    if (getActivity() != null) {
+                        getActivity().startActivityForResult(i, CHANGE_TEAM_INFO_REQUEST);
+                    }
+                }
+            });
+
+            Button deleteButton = convertView.findViewById(R.id.list_child_delete_button);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Delete Team " + teamNumber + "?")
+                            .setMessage("Are you sure you want to delete this team?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    CitrusDb.getInstance().deleteTeam(teamNumber);
+                                    refresh();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                }
+            });
 
             return convertView;
         }

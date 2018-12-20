@@ -29,14 +29,15 @@ public class AddTeamActivity extends AppCompatActivity {
     private CheckBox endsLatchedCheckBox;
     private RadioButton craterParkingNoRadioButton, craterParkingPartialRadioButton, craterParkingFullRadioButton;
 
-    private EditText notesEditText;
-
     // Other
+    private EditText notesEditText;
     private Button autoFillButton;
     private Team possibleAutoFillTeam;
     private enum AutoFillEntryField {
         TEAM_NAME, TEAM_NUMBER
     }
+
+    public static final String PRESET_TEAM_NUMBER_INTENT_KEY = "PRESET_TEAM_NUMBER";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +69,11 @@ public class AddTeamActivity extends AppCompatActivity {
 
         notesEditText = findViewById(R.id.notes_editText);
         autoFillButton = findViewById(R.id.auto_fill_button);
+
+        if (getIntent().hasExtra(PRESET_TEAM_NUMBER_INTENT_KEY)) {
+            teamNumberEditText.setText(getIntent().getStringExtra(PRESET_TEAM_NUMBER_INTENT_KEY));
+            autoFill(null);
+        }
     }
 
     public void save(View view) {
