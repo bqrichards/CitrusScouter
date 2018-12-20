@@ -8,7 +8,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,10 +83,33 @@ public class ViewMatchlistFragment extends Fragment {
     }
 
     private void showNewMatchlistAlert() {
+        View newMatchlistView = View.inflate(getContext(), R.layout.dialog_new_matchlist, null);
+
+        // Add text change listener onto EditText
+        final EditText matchlistNameEditText = newMatchlistView.findViewById(R.id.matchlist_file_name);
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                String reservedChars = "|\\?*<\":>+[]/'";
+                for (int i = start; i < end; i++) {
+                    for (char c : reservedChars.toCharArray()) {
+                        if (source.charAt(i) == c) {
+                            Toast.makeText(getContext(), "Invalid character entered", Toast.LENGTH_LONG).show();
+                            return "";
+                        }
+                    }
+                }
+
+                return null;
+            }
+        };
+
+        matchlistNameEditText.setFilters(new InputFilter[] {filter});
+
         new AlertDialog.Builder(getContext())
                 .setTitle("New Matchlist")
                 .setMessage("Enter in the name for this matchlist")
-                .setView(R.layout.dialog_new_matchlist)
+                .setView(newMatchlistView)
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
