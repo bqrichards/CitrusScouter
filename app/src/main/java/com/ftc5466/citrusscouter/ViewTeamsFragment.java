@@ -29,8 +29,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import static com.ftc5466.citrusscouter.MainActivity.CHANGE_TEAM_INFO_REQUEST;
@@ -111,6 +109,10 @@ public class ViewTeamsFragment extends Fragment {
             } catch (WriterException e) {
                 e.printStackTrace();
             }
+            return true;
+        } else if (id == R.id.action_show_statistics) {
+            Intent i = new Intent(getContext(), StatisticsActivity.class);
+            startActivity(i);
             return true;
         } else if (id == R.id.action_import_from_qr) {
             Intent i = new Intent(getContext(), ImportFromQRActivity.class);

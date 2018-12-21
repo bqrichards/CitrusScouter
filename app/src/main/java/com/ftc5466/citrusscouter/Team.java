@@ -3,6 +3,8 @@ package com.ftc5466.citrusscouter;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import java.util.Random;
+
 public class Team {
     // Team Information
     private String teamName;
@@ -188,6 +190,31 @@ public class Team {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    /**
+     * Calculates the amount of points scored during Autonomous, TeleOp and End game
+     * @return total amount of points scored in a match
+     */
+    public int getTotalScore() {
+        int sum = 0;
+
+        // Autonomous
+        if (beginsLatched) sum += 30;
+        if (claimsDepot) sum += 15;
+        if (parkInCraterAutonomous) sum += 10;
+        if (detectGoldMineral) sum += 25;
+
+        // TeleOp
+        sum += (mineralsInDepot * 2);
+        sum += (mineralsInLander * 5);
+
+        // End Game
+        if (endsLatched) sum += 50;
+        if (partialParkInCrater) sum += 15;
+        if (fullParkInCrater) sum += 25;
+
+        return sum;
     }
 
     public String getExported() {
