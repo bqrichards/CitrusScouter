@@ -26,8 +26,10 @@ public class CitrusDb extends SQLiteOpenHelper  {
     private static final String DATABASE_NAME = "Citrus.db";
     private static CitrusDb db;
 
+    private final String MATCHLIST_DELIMITER = ">>>";
+
     // Matchlist
-    private String matchlistFilename;
+    public String matchlistFilename;
     public JSONArray matchlist;
 
     private CitrusDb(Context context) {
@@ -150,13 +152,11 @@ public class CitrusDb extends SQLiteOpenHelper  {
     }
 
     public boolean loadMatchlist(Context context, String filename) {
-        // Try to load matchlist
         String contents = readFromFile(context, filename);
         if (contents == null) {
             MainActivity.log("Matchlist " + filename + " not found. :(");
             return false;
         } else {
-            MainActivity.log("Found matchlist " + filename + "! Loading...");
             try {
                 matchlist = new JSONArray(contents);
                 matchlistFilename = filename;
@@ -183,19 +183,36 @@ public class CitrusDb extends SQLiteOpenHelper  {
         Toast.makeText(context, "Saved " + matchlistFilename, Toast.LENGTH_SHORT).show();
     }
 
-    public void importFromString(String databaseText) {
+    public void importTeamsFromString(String databaseText) {
         String[] teamStrings = databaseText.split("\\|");
         if (teamStrings.length == 0) {
             return;
         }
 
-        for (int i = 0; i < teamStrings.length; i++) {
-            Team newTeam = new Team(teamStrings[i]);
+        for (String teamString : teamStrings) {
+            Team newTeam = new Team(teamString);
             insertTeam(newTeam);
         }
     }
 
-    public String getExported() {
+    /**
+     * TODO
+     * @param matchlistText
+     */
+    public void importMatchlistFromString(Context context, String matchlistText) {
+        String[] components = matchlistText.split(MATCHLIST_DELIMITER);
+
+        if (components.length != 2) {
+            MainActivity.logE("Data was encoded wrong. components.length != 2");
+            return;
+        }
+
+        matchlistFilename = components[0];
+        writeToFile(context, matchlistFilename, components[1]);
+        loadMatchlist(context, matchlistFilename);
+    }
+
+    public String getExportedTeams() {
         StringBuilder sb = new StringBuilder();
         LinkedList<Team> teams = getTeams();
         for (int i = 0; i < teams.size(); i++) {
@@ -206,6 +223,21 @@ public class CitrusDb extends SQLiteOpenHelper  {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Export the current matchlist filename and file data into one string.
+     * @return The exported matchlist
+     */
+    public String getExportedMatchlist(Context context) {
+        if (matchlistFilename == null) {
+            return null;
+        }
+
+        String matchlistExported = matchlistFilename + MATCHLIST_DELIMITER + readFromFile(context, matchlistFilename);
+        MainActivity.log(matchlistExported);
+
+        return matchlistExported;
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -17,6 +18,10 @@ import java.util.Collections;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class ImportFromQRActivity extends Activity implements ZXingScannerView.ResultHandler {
+    public static final String INTENT_PURPOSE_KEY = "ImportFromQRPurpose";
+    public static final String INTENT_PURPOSE_TEAMS = "ImportFromQRTeamsPurpose";
+    public static final String INTENT_PURPOSE_MATCHLIST = "ImportFromQRMatchlistPurpose";
+
     private ZXingScannerView mScannerView;
 
     @Override
@@ -46,7 +51,19 @@ public class ImportFromQRActivity extends Activity implements ZXingScannerView.R
         String string = rawResult.getText();
         if (string.isEmpty()) { return; }
 
-        CitrusDb.getInstance().importFromString(string);
+        switch (getIntent().getStringExtra(INTENT_PURPOSE_KEY)) {
+            case INTENT_PURPOSE_TEAMS:
+                CitrusDb.getInstance().importTeamsFromString(string);
+                break;
+            case INTENT_PURPOSE_MATCHLIST:
+                CitrusDb.getInstance().importMatchlistFromString(this, string);
+                break;
+            default:
+                Toast.makeText(this, "THE DEV NEEDS TO ADD INTENT_PURPOSE_KEY to this activity", Toast.LENGTH_SHORT).show();
+                MainActivity.logE("THE DEV NEEDS TO ADD INTENT_PURPOSE_KEY to this activity");
+                break;
+        }
+
         setResult(0);
         finish();
     }

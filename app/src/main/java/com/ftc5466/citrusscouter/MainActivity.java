@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int CHANGE_TEAM_INFO_REQUEST = 0;
     public static final int IMPORT_FROM_QR_CODE_REQUEST = 1;
-    private final int TAB_START_INDEX = 0; // Used for debugging, swiping to new tab every time is annoying
+    private final int TAB_START_INDEX = 1; // Used for debugging, swiping to new tab every time is annoying
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void log(Object o) {
+        Log.e(LOG_TAG, o.toString());
+    }
+
+    public static void logE(Object o) {
         Log.e(LOG_TAG, o.toString());
     }
 

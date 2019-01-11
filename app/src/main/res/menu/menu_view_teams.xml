@@ -4,10 +4,10 @@
     tools:context="com.ftc5466.citrusscouter.MainActivity">
 
     <item
-    android:id="@+id/action_export_to_qr"
-    android:orderInCategory="100"
-    android:title="Export to QR"
-    app:showAsAction="never" />
+        android:id="@+id/action_export_to_qr"
+        android:orderInCategory="100"
+        android:title="Export to QR"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_import_from_qr"

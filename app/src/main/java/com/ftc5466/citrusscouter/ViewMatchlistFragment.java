@@ -2,6 +2,8 @@ package com.ftc5466.citrusscouter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,8 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.json.JSONException;
 
@@ -74,12 +82,59 @@ public class ViewMatchlistFragment extends Fragment {
         } else if (id == R.id.action_delete_matchlist) {
             showDeleteMatchlistAlert();
             return true;
+        } else if (id == R.id.action_import_matchlist) {
+            Intent i = new Intent(getContext(), ImportFromQRActivity.class);
+            i.putExtra(ImportFromQRActivity.INTENT_PURPOSE_KEY, ImportFromQRActivity.INTENT_PURPOSE_MATCHLIST);
+            startActivityForResult(i, MainActivity.IMPORT_FROM_QR_CODE_REQUEST);
+            return true;
+        } else if (id == R.id.action_export_matchlist) {
+            String exported = CitrusDb.getInstance().getExportedMatchlist(getContext());
+            if (exported == null || exported.isEmpty()) {
+                Toast.makeText(getContext(), "Cannot export empty matchlist", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                int width = 550, height = 550;
+                BitMatrix matrix = writer.encode(exported, BarcodeFormat.QR_CODE, width, height);
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bitmap.setPixel(x, y, matrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                ImageView imageView = new ImageView(getContext());
+                imageView.setImageBitmap(bitmap);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Exported Matchlist")
+                        .setView(imageView)
+                        .show();
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            return true;
         } else if (id == R.id.action_set_my_team_number) {
             showSetMyTeamNumberAlert();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MainActivity.IMPORT_FROM_QR_CODE_REQUEST) {
+            if (CitrusDb.getInstance().matchlist == null) {
+                return;
+            }
+
+            String msg = "Matchlist " + CitrusDb.getInstance().matchlistFilename + " imported!" +
+                    " Please load matchlist for imported data!";
+            Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showNewMatchlistAlert() {
@@ -94,7 +149,7 @@ public class ViewMatchlistFragment extends Fragment {
                 for (int i = start; i < end; i++) {
                     for (char c : reservedChars.toCharArray()) {
                         if (source.charAt(i) == c) {
-                            Toast.makeText(getContext(), "Invalid character entered", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Invalid character entered", Toast.LENGTH_SHORT).show();
                             return "";
                         }
                     }
@@ -250,9 +305,6 @@ public class ViewMatchlistFragment extends Fragment {
 
             for (int j = 0; j < columns; j++) {
                 EditText editText = new EditText(getContext());
-                editText.setSingleLine();
-                editText.setMaxLines(1);
-                editText.setLines(1);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 String teamNumber = CitrusDb.getInstance().matchlist.getJSONArray(i).getString(j);
                 editText.setText(teamNumber);
@@ -264,6 +316,7 @@ public class ViewMatchlistFragment extends Fragment {
                 param.height = GridLayout.LayoutParams.WRAP_CONTENT;
                 param.rowSpec = GridLayout.spec(i+1);
                 param.columnSpec = GridLayout.spec(j+1);
+                param.setGravity(1);
                 editText.setLayoutParams(param);
                 gridLayout.addView(editText);
                 editTexts[i][j] = editText;

@@ -3,19 +3,27 @@
 
     <item
         android:id="@+id/action_new_matchlist"
-        android:title="New Matchlist" />
+        android:title="New" />
 
     <item
         android:id="@+id/action_save_matchlist"
-        android:title="Save Matchlist" />
+        android:title="Save" />
 
     <item
         android:id="@+id/action_load_matchlist"
-        android:title="Load Matchlist" />
+        android:title="Load" />
 
     <item
         android:id="@+id/action_delete_matchlist"
-        android:title="Delete Matchlist" />
+        android:title="Delete" />
+
+    <item
+        android:id="@+id/action_import_matchlist"
+        android:title="Import from QR" />
+
+    <item
+        android:id="@+id/action_export_matchlist"
+        android:title="Export to QR" />
 
     <item
         android:id="@+id/action_set_my_team_number"

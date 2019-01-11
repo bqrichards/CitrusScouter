@@ -84,7 +84,7 @@ public class ViewTeamsFragment extends Fragment {
                     .show();
             return true;
         } else if (id == R.id.action_export_to_qr) {
-            String exported = CitrusDb.getInstance().getExported();
+            String exported = CitrusDb.getInstance().getExportedTeams();
             if (exported.isEmpty()) {
                 Toast.makeText(getContext(), "Cannot export empty database", Toast.LENGTH_SHORT).show();
                 return true;
@@ -116,6 +116,7 @@ public class ViewTeamsFragment extends Fragment {
             return true;
         } else if (id == R.id.action_import_from_qr) {
             Intent i = new Intent(getContext(), ImportFromQRActivity.class);
+            i.putExtra(ImportFromQRActivity.INTENT_PURPOSE_KEY, ImportFromQRActivity.INTENT_PURPOSE_TEAMS);
             startActivityForResult(i, MainActivity.IMPORT_FROM_QR_CODE_REQUEST);
             return true;
         }
